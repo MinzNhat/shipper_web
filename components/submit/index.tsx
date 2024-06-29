@@ -20,12 +20,12 @@ const SubmitPopup: React.FC<SubmitPopupProps> = ({ onClose, message, ref, submit
         const handleClickOutside = (event: MouseEvent) => {
             if (ref) {
                 if (ref.current && !ref.current.contains(event.target as Node)) {
-                    handleClose();
+                    // handleClose();
                 }
             }
             else {
                 if (notificationRef.current && !notificationRef.current.contains(event.target as Node)) {
-                    handleClose();
+                    // handleClose();
                 }
             }
         };

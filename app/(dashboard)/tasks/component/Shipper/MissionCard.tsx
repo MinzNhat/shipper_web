@@ -2,7 +2,8 @@ import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Button } from "@nextui-org/react";
 import { FormattedMessage, useIntl } from "react-intl";
-import { OrdersOperation, ShippersOperation } from "@/TDLib/tdlogistics";
+// import { OrdersOperation, ShippersOperation } from "@/TDLib/tdlogistics";
+import { OrdersOperation, ShippersOperation, UpdatingOrderImageParams } from "@/TDLib/libv2";
 import SubmitPopup from "@/components/submit";
 import NotiPopup from "@/components/notification";
 import { FaMapLocationDot } from "react-icons/fa6";
@@ -10,7 +11,7 @@ import DirectPopup from "../Common/DirectPopup";
 import DetailPopup from "@/components/popup";
 import SignaturePad from "./SignaturePad";
 import Dropzone, { FileWithPreview } from "./Dropzone";
-import { UpdatingOrderImageCondition } from "@/TDLib/tdlogistcs";
+// import { UpdatingOrderImageCondition } from "@/TDLib/tdlogistcs";
 import DetailOrder from "./DetailOrder";
 const MissionCard = ({ data, toggle, keyName, reloadData }: { data: any, toggle: any, keyName: any, reloadData: any }) => {
     const [openDetail, setOpenDetail] = useState(false);
@@ -61,10 +62,11 @@ const MissionCard = ({ data, toggle, keyName, reloadData }: { data: any, toggle:
 
     const handleSendSignature = async () => {
         const confirmingUpdateTaskInfo = {
-            order_id: data.order_id,
+            orderId: data.order_id,
+            taskId: data.id,
             type: option !== 1 ? "send" : "receive"
         };
-        const imageData = { signature: savedSignature };
+        const imageData = { image: new File([savedSignature!], 'name') };
         const response = await ordersOperation.updateSignature(imageData, confirmingUpdateTaskInfo);
         setOpenConfirm(false)
         if (response.error || response.error.error) {
@@ -104,17 +106,18 @@ const MissionCard = ({ data, toggle, keyName, reloadData }: { data: any, toggle:
             setOpenError(true)
             return;
         }
-        let updatingOrderCondition: UpdatingOrderImageCondition = {
-            order_id: data.order_id,
+        let updatingOrderCondition: UpdatingOrderImageParams = {
+            orderId: data.order_id,
+            taskId: data.id,
             type: option == 1 ? "send" : "receive",
         };
 
         let updatingOrderInfo = {
-            files: files
+            image: files
         }
 
         try {
-            const result = await ordersOperation.updateImage(updatingOrderInfo, updatingOrderCondition);
+            const result = await ordersOperation.updateImages(updatingOrderInfo, updatingOrderCondition);
             console.log(result.error)
             if (!!result.error || !!result.error.error) {
                 setMessage(result.message || result.error.message)

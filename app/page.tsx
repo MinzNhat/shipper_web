@@ -9,8 +9,11 @@ import ParticlesBackground from "@/components/Particle";
 import NotiPopup from "@/components/notification";
 import { useRouter } from "next/navigation";
 import { FormattedMessage, useIntl } from "react-intl";
-import { PartnerStaffAuthenticate, PartnerStaffOperation, StaffsAuthenticate, StaffsOperation } from "@/TDLib/tdlogistics";
+// import { PartnerStaffAuthenticate, PartnerStaffOperation, StaffsAuthenticate, StaffsOperation } from "@/TDLib/tdlogistics";
 import LanguageSwitcher from "@/components/language";
+
+import { AuthOperation, LoginPayload } from "@/TDLib/libv2";
+
 type Props = {};
 
 const AuthPage: FC<Props> = () => {
@@ -38,7 +41,7 @@ const AuthPage: FC<Props> = () => {
     if (handleCheckField()) return;
     setLoading(true)
     if (role == 2) {
-      const agency = new PartnerStaffAuthenticate()
+      const agency = new AuthOperation()
       const response = await agency.login(account, password)
       console.log(response)
       if (!response.error) {
@@ -52,10 +55,10 @@ const AuthPage: FC<Props> = () => {
       // res = await getinfo.getAuthenticatedPartnerStaffInfo()
     }
     else {
-      const staffsAuthenticate = new StaffsAuthenticate();
-      const response = await staffsAuthenticate.login(account, password)
+      const agency = new AuthOperation()
+      const response = await agency.login(account, password)
       console.log(response)
-      if (response.valid == true && response.error == false) {
+      if (response.error == false) {
         setMessage(intl.formatMessage({ id: "Login.Message2" }));
         setModal(true)
       } else {

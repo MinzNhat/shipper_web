@@ -1,5 +1,6 @@
 'use client'
-import { PartnerStaffOperation, ShippersOperation } from "@/TDLib/tdlogistics";
+// import { PartnerStaffOperation, ShippersOperation } from "@/TDLib/tdlogistics";
+import {ShippersOperation} from "@/TDLib/libv2";
 import { useContext, useEffect, useState } from "react";
 import CheckTable from "./components/table";
 import { columnsData } from "./variables/columnsData";

@@ -263,6 +263,38 @@ const CheckTable = (props: Props) => {
                                                         </Button>
                                                     </div>
                                                 );
+                                            } else if (cell.column.Header === "order.id") {
+                                                renderData = (
+                                                    <div className="w-full flex justify-end">
+                                                        <Button
+                                                            onClick={() => {
+                                                                setDataRow(row.original)
+                                                                setOpenModal(true);
+                                                            }}
+                                                            className={`flex items-center hover:cursor-pointer bg-lightPrimary p-2 h-8 w-8 rounded-full text-navy-800 dark:text-white  border 
+                            border-gray-200 dark:!border-none hover:bg-gray-100 dark:bg-[#3A3B3C] dark:hover:bg-white/20 dark:active:bg-white/10
+                              linear justify-center font-bold transition duration-200 mr-2`}
+                                                        >
+                                                            <IoAddOutline className="w-full h-full font-bold" />
+                                                        </Button>
+                                                    </div>
+                                                );
+                                            } else if (cell.column.Header === "order.orderId") {
+                                                renderData = (
+                                                    <div className="w-full flex justify-end">
+                                                        <Button
+                                                            onClick={() => {
+                                                                setDataRow(row.original)
+                                                                setOpenModal(true);
+                                                            }}
+                                                            className={`flex items-center hover:cursor-pointer bg-lightPrimary p-2 h-8 w-8 rounded-full text-navy-800 dark:text-white  border 
+                            border-gray-200 dark:!border-none hover:bg-gray-100 dark:bg-[#3A3B3C] dark:hover:bg-white/20 dark:active:bg-white/10
+                              linear justify-center font-bold transition duration-200 mr-2`}
+                                                        >
+                                                            <IoAddOutline className="w-full h-full font-bold" />
+                                                        </Button>
+                                                    </div>
+                                                );
                                             }
                                             return (
                                                 <td

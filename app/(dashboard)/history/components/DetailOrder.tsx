@@ -2,11 +2,13 @@ import React, { useRef, useEffect, useState, useContext } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { FormattedMessage, useIntl } from "react-intl";
 import DetailPopup from "@/components/popup";
-import { OrdersOperation } from "@/TDLib/tdlogistics";
-import { UpdatingOrderImageCondition } from "@/TDLib/tdlogistcs";
+// import { OrdersOperation } from "@/TDLib/tdlogistics";
+import { OrdersOperation, GettingOrderImageParams, UpdatingOrderImageParams } from "@/TDLib/libv2";
+// import { UpdatingOrderImageCondition } from "@/TDLib/tdlogistcs";
 import { Button } from "@nextui-org/react";
 import { CarouselSlider } from "@/components/slider";
 import { MdRadioButtonChecked, MdRadioButtonUnchecked } from "react-icons/md";
+import { PassDataContext } from "@/providers/PassedData";
 
 
 interface DetailOrderProps {
@@ -19,32 +21,41 @@ const DetailOrder: React.FC<DetailOrderProps> = ({ onClose, dataInitial }) => {
     const [imageUrls2, setImageUrls2] = useState<string[]>([]);
     const ordersOperation = new OrdersOperation();
     const [option, setOption] = useState<null | number>(0);
+    const { passData, setPassData } = useContext(PassDataContext)
     const intl = useIntl()
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const sendSignatureCondition: UpdatingOrderImageCondition = {
-                    order_id: dataInitial.order_id,
+                const response = await ordersOperation.get({orderId : dataInitial.orderId});
+                setPassData(response);
+
+                console.log(response);
+
+                const sendSignatureCondition: GettingOrderImageParams = {
+                    orderId: dataInitial.orderId,
                     type: "send"
                 };
-                const receiveSignatureCondition: UpdatingOrderImageCondition = {
-                    order_id: dataInitial.order_id,
+                const receiveSignatureCondition: UpdatingOrderImageParams = {
+                    orderId: dataInitial.orderId,
+                    taskId: dataInitial.id,
                     type: "receive"
                 };
                 const sendSignatureUrl = await ordersOperation.getSignature(sendSignatureCondition);
                 const receiveSignatureUrl = await ordersOperation.getSignature(receiveSignatureCondition);
 
-                const sendImagesCondition: UpdatingOrderImageCondition = {
-                    order_id: dataInitial.order_id,
+                const sendImagesCondition: UpdatingOrderImageParams = {
+                    orderId: dataInitial.orderId,
+                    taskId: dataInitial.id,
                     type: "send"
                 };
-                const sendImages = await ordersOperation.getImage(sendImagesCondition);
+                const sendImages = await ordersOperation.getImages(sendImagesCondition);
                 setImageUrls([...sendImages.map((image: any) => image), ...sendSignatureUrl.map((image: any) => image)]);
-                const receiveImagesCondition: UpdatingOrderImageCondition = {
-                    order_id: dataInitial.order_id,
+                const receiveImagesCondition: UpdatingOrderImageParams = {
+                    orderId: dataInitial.orderId,
+                    taskId: dataInitial.id,
                     type: "receive"
                 };
-                const receiveImages = await ordersOperation.getImage(receiveImagesCondition);
+                const receiveImages = await ordersOperation.getImages(receiveImagesCondition);
                 setImageUrls2([...receiveImages.map((image: any) => image), ...receiveSignatureUrl.map((image: any) => image)]);
             } catch (error) {
                 console.error("Error fetching data:", error);
@@ -128,7 +139,7 @@ const DetailOrder: React.FC<DetailOrderProps> = ({ onClose, dataInitial }) => {
                     </div>
                     <div className="w-full h-full flex-col">
                         <p className="whitespace-nowrap flex flex-row gap-2">
-                            {dataInitial.order_id || intl.formatMessage({ id: "Mission.Detail.Info17" })}
+                            {dataInitial.orderId || intl.formatMessage({ id: "Mission.Detail.Info17" })}
                         </p>
                         <p className="whitespace-nowrap flex flex-row gap-2">
                             {dataInitial.name_sender || intl.formatMessage({ id: "Mission.Detail.Info17" })}

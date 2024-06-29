@@ -2,8 +2,9 @@ import React, { useRef, useEffect, useState, useContext } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { FormattedMessage, useIntl } from "react-intl";
 import DetailPopup from "@/components/popup";
-import { OrdersOperation } from "@/TDLib/tdlogistics";
-import { UpdatingOrderImageCondition } from "@/TDLib/tdlogistcs";
+// import { OrdersOperation } from "@/TDLib/tdlogistics";
+import { OrdersOperation, UpdatingOrderImageParams } from "@/TDLib/libv2";
+// import { UpdatingOrderImageCondition } from "@/TDLib/tdlogistcs";
 import { Button } from "@nextui-org/react";
 import { CarouselSlider } from "@/components/slider";
 import { MdRadioButtonChecked, MdRadioButtonUnchecked } from "react-icons/md";
@@ -104,7 +105,7 @@ const DetailOrder: React.FC<DetailPopupProps> = ({ onClose, dataInitial, reloadD
     const ordersOperation = new OrdersOperation();
     const [loading, setLoading] = useState(false)
     const handleFetchOrder = async () => {
-        const response = await ordersOperation.get({ order_id: dataInitial.order_id })
+        const response = await ordersOperation.get({ orderId: dataInitial.order_id })
         if (!response.error) {
             setData(response.data[0])
             setData2(response.data[0])
@@ -177,11 +178,12 @@ const DetailOrder: React.FC<DetailPopupProps> = ({ onClose, dataInitial, reloadD
         handleFetchOrder()
         const fetchImages = async () => {
             try {
-                const condition: UpdatingOrderImageCondition = {
-                    order_id: dataInitial.order_id,
+                const condition: UpdatingOrderImageParams = {
+                    orderId: dataInitial.order_id,
+                    taskId: dataInitial.id,
                     type: "send"
                 };
-                const urls = await ordersOperation.getImage(condition);
+                const urls = await ordersOperation.getImages(condition);
                 setImageUrls(urls);
             } catch (error) {
                 console.error("Error fetching images:", error);
@@ -189,11 +191,12 @@ const DetailOrder: React.FC<DetailPopupProps> = ({ onClose, dataInitial, reloadD
         };
         const fetchImages2 = async () => {
             try {
-                const condition: UpdatingOrderImageCondition = {
-                    order_id: dataInitial.order_id,
+                const condition: UpdatingOrderImageParams = {
+                    orderId: dataInitial.order_id,
+                    taskId: dataInitial.id,
                     type: "receive"
                 };
-                const urls2 = await ordersOperation.getImage(condition);
+                const urls2 = await ordersOperation.getImages(condition);
                 setImageUrls2(urls2);
             } catch (error) {
                 console.error("Error fetching images:", error);
@@ -254,7 +257,7 @@ const DetailOrder: React.FC<DetailPopupProps> = ({ onClose, dataInitial, reloadD
             order_id: data.order_id,
         };
         setLoading(true)
-        const response = await ordersOperation.update(updatingOrderInfo, updatingOrderCondition);
+        const response = await ordersOperation.update(updatingOrderInfo, {orderId: updatingOrderCondition.order_id});
         setOpenConfirm(false)
         if (response.error) {
             setMessage(response.message);

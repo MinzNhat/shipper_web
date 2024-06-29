@@ -15,7 +15,8 @@ import { motion } from "framer-motion";
 import { BsGlobe } from "react-icons/bs";
 import LanguageSwitcher from "../language";
 import { FormattedMessage, useIntl } from "react-intl";
-import { PartnerStaffOperation, StaffsOperation } from "@/TDLib/tdlogistics";
+// import { PartnerStaffOperation, StaffsOperation } from "@/TDLib/tdlogistics";
+import { TransportPartnerStaffOperation, StaffOperation } from "@/TDLib/libv2";
 import { PassDataContext } from "@/providers/PassedData";
 import NotiPopup from "../notification";
 import SubmitPopup from "../submit";
@@ -80,8 +81,8 @@ const Navbar = ({ }: Props) => {
   };
 
   const handleLogout = async () => {
-    const action = new StaffsOperation()
-    await action.logout()
+    const action = new StaffOperation()
+    // await action.logout()
     route.push("/");
   };
 
@@ -92,9 +93,9 @@ const Navbar = ({ }: Props) => {
   };
 
   const checkUserLoggedIn = async () => {
-    const getinfo = new PartnerStaffOperation()
-    const staffsOperation = new StaffsOperation();
-    const response = await getinfo.getAuthenticatedPartnerStaffInfo();
+    const getinfo = new TransportPartnerStaffOperation()
+    const staffsOperation = new StaffOperation();
+    const response = await getinfo.getAuthenticatedStaffInfo();
     const res = await staffsOperation.getAuthenticatedStaffInfo();
     console.log(response)
     console.log(res)
@@ -137,11 +138,11 @@ const Navbar = ({ }: Props) => {
               <span className="font-semibold"><FormattedMessage id="Navbar.Info3" /></span>
               <span className="font-semibold">:</span>
             </p>
-            <p className="whitespace-nowrap flex flex-row justify-between gap-2">
+            {/* <p className="whitespace-nowrap flex flex-row justify-between gap-2">
               <span className="font-semibold"><FormattedMessage id="Navbar.Info4" /></span>
               <span className="font-semibold">:</span>
               {" "}
-            </p>
+            </p> */}
             <p className="whitespace-nowrap flex flex-row justify-between gap-2">
               <span className="font-semibold"><FormattedMessage id="Navbar.Info5" /></span>
               <span className="font-semibold">:</span>
@@ -157,28 +158,28 @@ const Navbar = ({ }: Props) => {
           </div>
           <div className="w-full h-full flex-col">
             <p className="whitespace-nowrap flex flex-row gap-2">
-              {passData.fullname}
+              {passData.fullname??"No infor"}
             </p>
             <p className="whitespace-nowrap flex flex-row gap-2">
-              {passData.username}
+              {passData.account.username??"No infor"}
             </p>
             <p className="flex flex-col sm:flex-row sm:gap-2">
-              {passData.email}
+              {passData.account.email??"No infor"}
             </p>
             <p className="whitespace-nowrap flex flex-row gap-2">
-              {passData.phone_number}
+              {passData.account.phoneNumber??"No infor"}
+            </p>
+            {/* <p className="whitespace-nowrap flex flex-row gap-2">
+              {new Date(passData.date_of_birth).toLocaleDateString("en-US")??"No infor"}
+            </p> */}
+            <p className="whitespace-nowrap flex flex-row gap-2">
+              {passData.position??"No infor"}
             </p>
             <p className="whitespace-nowrap flex flex-row gap-2">
-              {new Date(passData.date_of_birth).toLocaleDateString("en-US")}
-            </p>
-            <p className="whitespace-nowrap flex flex-row gap-2">
-              {passData.position}
-            </p>
-            <p className="whitespace-nowrap flex flex-row gap-2">
-              {passData.cccd}
+              {passData.cccd??"No infor"}
             </p>
             <p className="flex flex-col">
-              {passData.detail_address}, {passData.town}, {passData.district}, {passData.province}
+              {passData.detailAddress??"No infor"}, {passData.town??"No infor"}, {passData.district??"No infor"}, {passData.province??"No infor"}
             </p>
           </div>
         </div>

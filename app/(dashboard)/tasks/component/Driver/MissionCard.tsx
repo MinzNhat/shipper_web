@@ -2,8 +2,9 @@ import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Button } from "@nextui-org/react";
 import { FormattedMessage, useIntl } from "react-intl";
-import { DriversOperation, ShipmentsOperation, VehicleOperation } from "@/TDLib/tdlogistics";
+// import { DriversOperation, ShipmentsOperation, VehicleOperation } from "@/TDLib/tdlogistics";
 // import DetailOrder from "./DetailPopup";
+import { DriversOperation, VehicleOperation } from '@/TDLib/libv2';
 import { TbLocation } from "react-icons/tb";
 import { MdOutlineMyLocation } from "react-icons/md";
 import SubmitPopup from "@/components/submit";
@@ -80,7 +81,7 @@ const TaskCard = ({ data, toggle, keyName, reloadData }: { data: any, toggle: an
 
     const handleUndertake = async () => {
         try {
-            const response = await shipment.undertakeShipment(undertakingShipmentInfo);
+            const response = await shipment.undertakeShiment(undertakingShipmentInfo.shipment_id);
             setOpenConfirm(false);
             if (!!response.error || !!response.error.error) {
                 setMessage(response.message || response.error.message);

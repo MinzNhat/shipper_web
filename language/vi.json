@@ -123,9 +123,9 @@
     "order.COD": "Tiền COD",
     "order.detail": "Chi tiết",
     "order.fee": "Phí",
-    "order.name_receiver": "Tên người nhận",
-    "order.name_sender": "Tên người gửi",
-    "order.order_id": "Mã đơn hàng",
+    "order.nameReceiver": "Tên người nhận",
+    "order.nameSender": "Tên người gửi",
+    "order.orderId": "Mã đơn hàng",
     "History.Message": "Lịch sử công việc trống",
     "Mission.AccessDenied": "Vai trò của bạn không có quyền han sử dụng chức năng này.",
     "NoimgUploaded": "Hiện chưa có ảnh được lưu"

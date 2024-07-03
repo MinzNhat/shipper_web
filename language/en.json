@@ -123,9 +123,9 @@
     "order.COD": "COD Amount",
     "order.detail": "Details",
     "order.fee": "Fee",
-    "order.name_receiver": "Recipient's Name",
-    "order.name_sender": "Sender's Name",
-    "order.order_id": "Order ID",
+    "order.nameReceiver": "Recipient's Name",
+    "order.nameSender": "Sender's Name",
+    "order.orderId": "Order ID",
     "History.Message": "No work history",
     "Mission.AccessDenied": "Your role does not have permission to use this feature.",
     "NoimgUploaded": "No image saved"

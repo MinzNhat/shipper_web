@@ -1,6 +1,6 @@
 'use client'
 // import { PartnerStaffOperation, ShippersOperation } from "@/TDLib/tdlogistics";
-import {ShippersOperation} from "@/TDLib/libv2";
+import {ShippersOperation, OrdersOperation} from "@/TDLib/libv2";
 import { useContext, useEffect, useState } from "react";
 import CheckTable from "./components/table";
 import { columnsData } from "./variables/columnsData";
@@ -14,8 +14,19 @@ const ShipperHistory = () => {
     const [selectedOption, setSelectedOption] = useState(0);
     const getData = async (option: number,) => {
         const histories = new ShippersOperation();
+        const ordersOperation = new OrdersOperation();
 
         const data2 = await histories.getHistory({ option: option });
+        var datas = [];
+        for (var i = 0; i < data2.data.length; i++) {
+            var data = (await ordersOperation.get({ orderId: (data2.data[i].orderId) })).data[0];
+            data.id = data2.data[i].id;
+            datas.push(data);
+        }
+
+        data2.data = datas;
+        console.log("data2.data");
+        console.log(data2.data);
         if (!data2.error) setData(data2.data)
     }
 

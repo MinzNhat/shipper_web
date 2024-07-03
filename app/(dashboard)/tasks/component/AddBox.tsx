@@ -11,7 +11,7 @@ import { useRouter } from 'next/navigation';
 import SubmitPopup from '@/components/submit';
 import { PassDataContext } from '@/providers/PassedData';
 // import { DriversOperation, ShippersOperation } from '@/TDLib/tdlogistics';
-import { DriversOperation, ShippersOperation } from '@/TDLib/libv2';
+import { DriversOperation, OrdersOperation, ShippersOperation } from '@/TDLib/libv2';
 import { Dropdown, DropdownTrigger, Button, DropdownMenu, DropdownItem } from "@nextui-org/react";
 import { FormattedMessage, useIntl } from 'react-intl';
 import { FiCamera } from 'react-icons/fi';
@@ -35,6 +35,7 @@ const AddPanel = () => {
     const { passData, setPassData } = useContext(PassDataContext);
     const tasks = new ShippersOperation();
     const drivertasks = new DriversOperation();
+    const ordersOperation = new OrdersOperation();
     const [selectedOption, setSelectedOption] = useState(0);
     const intl = useIntl();
     const [searchValue, setSearchValue] = useState("");
@@ -79,16 +80,24 @@ const AddPanel = () => {
     const handleFetchTask = async (option: number) => {
         setTask(null);
         let response = null;
+        let datas = [];
+        console.log("ok1");
         if (passData?.role == "PARTNER_DRIVER") {
             response = await drivertasks.getTask({ option: option });
         } else {
             response = await tasks.getTask({ option: option });
+            for (var i = 0; i < response.data.length; i++) {
+                var data = await ordersOperation.get({ orderId: (response.data[i].orderId) });
+                console.log(data);
+                datas.push(data);
+            }
+            console.log("ok");
         }
 
         if (!!response.error || !!response.error.error) {
             setMessage(response.message);
             setOpenError(true);
-        } else setTask(response.data);
+        } else setTask(datas);
     };
 
     const handleReloadData = async () => {

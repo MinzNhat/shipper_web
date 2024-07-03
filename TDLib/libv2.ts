@@ -1948,6 +1948,7 @@ export class ShippersOperation {
 
 			const data = response.data;
             
+            console.log("get history");
             console.log(response);
 			return { error: data.error, data: data.data, message: data.message };
 		} catch (error: any) {

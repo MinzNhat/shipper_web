@@ -3,16 +3,16 @@ export const columnsData = [
   //   Header: "Checkbox",
   // },
   {
-    Header: "order.order_id",
-    accessor: "order.order_id",
+    Header: "order.orderId",
+    accessor: "order.orderId",
   },
   {
-    Header: "order.name_sender",
-    accessor: "order.name_sender",
+    Header: "order.nameSender",
+    accessor: "order.nameSender",
   },
   {
-    Header: "order.name_receiver",
-    accessor: "order.name_receiver",
+    Header: "order.nameReceiver",
+    accessor: "order.nameReceiver",
   },
   {
     Header: "order.fee",

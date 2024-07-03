@@ -21,16 +21,10 @@ const DetailOrder: React.FC<DetailOrderProps> = ({ onClose, dataInitial }) => {
     const [imageUrls2, setImageUrls2] = useState<string[]>([]);
     const ordersOperation = new OrdersOperation();
     const [option, setOption] = useState<null | number>(0);
-    const { passData, setPassData } = useContext(PassDataContext)
     const intl = useIntl()
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await ordersOperation.get({orderId : dataInitial.orderId});
-                setPassData(response);
-
-                console.log(response);
-
                 const sendSignatureCondition: GettingOrderImageParams = {
                     orderId: dataInitial.orderId,
                     type: "send"

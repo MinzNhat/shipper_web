@@ -62,7 +62,7 @@ const MissionCard = ({ data, toggle, keyName, reloadData }: { data: any, toggle:
 
     const handleSendSignature = async () => {
         const confirmingUpdateTaskInfo = {
-            orderId: data.order_id,
+            orderId: data.orderId,
             taskId: data.id,
             type: option !== 1 ? "send" : "receive"
         };
@@ -107,7 +107,7 @@ const MissionCard = ({ data, toggle, keyName, reloadData }: { data: any, toggle:
             return;
         }
         let updatingOrderCondition: UpdatingOrderImageParams = {
-            orderId: data.order_id,
+            orderId: data.orderId,
             taskId: data.id,
             type: option == 1 ? "send" : "receive",
         };
@@ -133,138 +133,143 @@ const MissionCard = ({ data, toggle, keyName, reloadData }: { data: any, toggle:
         }
 
     };
+    console.log("data",data);
+    if(data) console.log("data order",data.order);
 
-    return (
-        <>
-            {openConfirm && <SubmitPopup onClose={() => { setOpenConfirm(false); }} message={message} submit={openSign ? handleSendSignature : (openImg ? handleSubmitImg : () => { })} />}
-            {openStatus && <SubmitPopup onClose={() => { setOpenStatus(false); }} message={message} submit={handleSubmitTaskComplete} />}
-            {openError && <NotiPopup onClose={() => { setOpenError(false); }} message={message} />}
-            {openDirect && <DirectPopup onClose={() => { setOpenDirect(false) }} dataInitial={data.order} toggle={toggle} />}
-            {openDetail && <DetailOrder onClose={() => setOpenDetail(false)} dataInitial={data} reloadData={reloadData} />}
-            {openSign && <DetailPopup onClose={() => { setOpenSign(false); setOption(0); setSavedSignature(null) }} className="pt-0" title={intl.formatMessage({ id: "Mission.Signature.Title" })} children={
-                <div className="relative flex flex-col rounded-b-3xl">
-                    <div className="sticky top-0 w-full flex bg-white dark:bg-[#242526] mb-2">
-                        <Button className={`w-full flex flex-row p-2 ${option === 0 ? "text-red-500 font-semibold" : "text-black"}`} onClick={() => setOption(0)}>
-                            <span className="text-sm sm:text-base"><FormattedMessage id="Mission.Pickup" /></span>
-                        </Button>
-                        <Button className={`w-full flex flex-row p-2 ${option === 1 ? "text-red-500 font-semibold" : "text-black"}`} onClick={() => setOption(1)}>
-                            <span className="text-sm sm:text-base"><FormattedMessage id="Mission.Receive" /></span>
-                        </Button>
-                        <motion.div
-                            className={`w-1/2 bg-red-500 bottom-0 h-[2px] ${option === 1 ? "right-0" : "left-0"} absolute`}
-                            initial={{ width: 0 }}
-                            animate={{ width: "50%" }}
-                            exit={{ width: 0 }}
-                            transition={{ duration: 0.3 }}
-                            variants={{
-                                left: { width: "50%", left: 0, right: "auto" },
-                                right: { width: "50%", left: "auto", right: 0 }
-                            }}
-                            //@ts-ignore
-                            initial="left"
-                            animate={option === 1 ? "right" : "left"}
-                            exit="left"
-                        />
+    var rend;
+    try {
+    rend = <>
+    {openConfirm && <SubmitPopup onClose={() => { setOpenConfirm(false); }} message={message} submit={openSign ? handleSendSignature : (openImg ? handleSubmitImg : () => { })} />}
+    {openStatus && <SubmitPopup onClose={() => { setOpenStatus(false); }} message={message} submit={handleSubmitTaskComplete} />}
+    {openError && <NotiPopup onClose={() => { setOpenError(false); }} message={message} />}
+    {openDirect && <DirectPopup onClose={() => { setOpenDirect(false) }} dataInitial={data} toggle={toggle} />}
+    {openDetail && <DetailOrder onClose={() => setOpenDetail(false)} dataInitial={data} reloadData={reloadData} />}
+    {openSign && <DetailPopup onClose={() => { setOpenSign(false); setOption(0); setSavedSignature(null) }} className="pt-0" title={intl.formatMessage({ id: "Mission.Signature.Title" })} children={
+        <div className="relative flex flex-col rounded-b-3xl">
+            <div className="sticky top-0 w-full flex bg-white dark:bg-[#242526] mb-2">
+                <Button className={`w-full flex flex-row p-2 ${option === 0 ? "text-red-500 font-semibold" : "text-black"}`} onClick={() => setOption(0)}>
+                    <span className="text-sm sm:text-base"><FormattedMessage id="Mission.Pickup" /></span>
+                </Button>
+                <Button className={`w-full flex flex-row p-2 ${option === 1 ? "text-red-500 font-semibold" : "text-black"}`} onClick={() => setOption(1)}>
+                    <span className="text-sm sm:text-base"><FormattedMessage id="Mission.Receive" /></span>
+                </Button>
+                <motion.div
+                    className={`w-1/2 bg-red-500 bottom-0 h-[2px] ${option === 1 ? "right-0" : "left-0"} absolute`}
+                    initial={{ width: 0 }}
+                    animate={{ width: "50%" }}
+                    exit={{ width: 0 }}
+                    transition={{ duration: 0.3 }}
+                    variants={{
+                        left: { width: "50%", left: 0, right: "auto" },
+                        right: { width: "50%", left: "auto", right: 0 }
+                    }}
+                    //@ts-ignore
+                    initial="left"
+                    animate={option === 1 ? "right" : "left"}
+                    exit="left"
+                />
+            </div>
+            <SignaturePad savedSignature={savedSignature} setSavedSignature={setSavedSignature} />
+            <div className="w-full flex sticky bottom-0 bg-white dark:bg-[#242526] pt-2">
+                <Button
+                    onClick={handleSubmitClick}
+                    className="w-full rounded-lg py-1.5 sm:py-2 text-green-500 border-green-500 hover:border-green-600 bg-transparent hover:text-white border-2 hover:bg-green-600 hover:shadow-md flex sm:gap-2"
+                >
+                    <span><FormattedMessage id="Mission.Direct.Button" /></span>
+                </Button>
+            </div>
+        </div>
+
+    } />}
+    {openImg && <DetailPopup onClose={() => { setOpenImg(false); setOption(0); setFiles([]) }} className="pt-0" title={intl.formatMessage({ id: "TaskCard.Img" })} children={
+        <div className="relative flex flex-col rounded-b-3xl">
+            <div className="sticky top-0 w-full flex bg-white dark:bg-[#242526] mb-2">
+                <Button className={`w-full flex flex-row p-2 ${option === 0 ? "text-red-500 font-semibold" : "text-black"}`} onClick={() => setOption(0)}>
+                    <span className="text-sm sm:text-base"><FormattedMessage id="Mission.Pickup" /></span>
+                </Button>
+                <Button className={`w-full flex flex-row p-2 ${option === 1 ? "text-red-500 font-semibold" : "text-black"}`} onClick={() => setOption(1)}>
+                    <span className="text-sm sm:text-base"><FormattedMessage id="Mission.Receive" /></span>
+                </Button>
+                <motion.div
+                    className={`w-1/2 bg-red-500 bottom-0 h-[2px] ${option === 1 ? "right-0" : "left-0"} absolute`}
+                    initial={{ width: 0 }}
+                    animate={{ width: "50%" }}
+                    exit={{ width: 0 }}
+                    transition={{ duration: 0.3 }}
+                    variants={{
+                        left: { width: "50%", left: 0, right: "auto" },
+                        right: { width: "50%", left: "auto", right: 0 }
+                    }}
+                    //@ts-ignore
+                    initial="left"
+                    animate={option === 1 ? "right" : "left"}
+                    exit="left"
+                />
+            </div>
+            <Dropzone files={files} setFiles={setFiles} className="px-4 mt-4" />
+            <div className="w-full flex sticky bottom-0 bg-white dark:bg-[#242526] pt-2">
+                <Button
+                    onClick={handleSubmitClick}
+                    className="w-full rounded-lg py-1.5 sm:py-2 text-green-500 border-green-500 hover:border-green-600 bg-transparent hover:text-white border-2 hover:bg-green-600 hover:shadow-md flex sm:gap-2"
+                >
+                    <span><FormattedMessage id="Mission.Direct.Button" /></span>
+                </Button>
+            </div>
+        </div>
+
+    } />}
+    <motion.div
+        className={`w-full rounded-lg relative bg-white dark:bg-[#242526] shadow-md font-sans`}
+        initial={{ opacity: 0, x: -30 }}
+        animate={{ opacity: 1, x: 0 }}
+        exit={{ opacity: 0, x: -30 }}
+        key={keyName}
+    >
+
+        <div className={`w-full flex flex-col text-black dark:text-white`}>
+            <div className="flex gap-2">
+                <div className="grow py-4 pl-4">
+                    <div className="flex flex-col">
+                        <p className="truncate font-bold text-center">{data.orderId}</p>
                     </div>
-                    <SignaturePad savedSignature={savedSignature} setSavedSignature={setSavedSignature} />
-                    <div className="w-full flex sticky bottom-0 bg-white dark:bg-[#242526] pt-2">
-                        <Button
-                            onClick={handleSubmitClick}
-                            className="w-full rounded-lg py-1.5 sm:py-2 text-green-500 border-green-500 hover:border-green-600 bg-transparent hover:text-white border-2 hover:bg-green-600 hover:shadow-md flex sm:gap-2"
-                        >
-                            <span><FormattedMessage id="Mission.Direct.Button" /></span>
-                        </Button>
+                    <div className="flex flex-col mt-2">
+                        <p className="font-bold whitespace-nowrap"><FormattedMessage id="Mission.Detail.Info25" />: </p>
+                        <p className="line-clamp-1">{`${data.detailSource}, ${data.wardSource}, ${data.districtSource}, ${data.provinceSource}`}</p>
+                    </div>
+                    <div className="flex flex-col mt-1">
+                        <p className="font-bold whitespace-nowrap"><FormattedMessage id="Mission.Detail.Info26" />: </p>
+                        <p className="line-clamp-1">{`${data.detailDest}, ${data.wardDest}, ${data.districtDest}, ${data.provinceDest}`}</p>
                     </div>
                 </div>
-
-            } />}
-            {openImg && <DetailPopup onClose={() => { setOpenImg(false); setOption(0); setFiles([]) }} className="pt-0" title={intl.formatMessage({ id: "TaskCard.Img" })} children={
-                <div className="relative flex flex-col rounded-b-3xl">
-                    <div className="sticky top-0 w-full flex bg-white dark:bg-[#242526] mb-2">
-                        <Button className={`w-full flex flex-row p-2 ${option === 0 ? "text-red-500 font-semibold" : "text-black"}`} onClick={() => setOption(0)}>
-                            <span className="text-sm sm:text-base"><FormattedMessage id="Mission.Pickup" /></span>
-                        </Button>
-                        <Button className={`w-full flex flex-row p-2 ${option === 1 ? "text-red-500 font-semibold" : "text-black"}`} onClick={() => setOption(1)}>
-                            <span className="text-sm sm:text-base"><FormattedMessage id="Mission.Receive" /></span>
-                        </Button>
-                        <motion.div
-                            className={`w-1/2 bg-red-500 bottom-0 h-[2px] ${option === 1 ? "right-0" : "left-0"} absolute`}
-                            initial={{ width: 0 }}
-                            animate={{ width: "50%" }}
-                            exit={{ width: 0 }}
-                            transition={{ duration: 0.3 }}
-                            variants={{
-                                left: { width: "50%", left: 0, right: "auto" },
-                                right: { width: "50%", left: "auto", right: 0 }
-                            }}
-                            //@ts-ignore
-                            initial="left"
-                            animate={option === 1 ? "right" : "left"}
-                            exit="left"
-                        />
-                    </div>
-                    <Dropzone files={files} setFiles={setFiles} className="px-4 mt-4" />
-                    <div className="w-full flex sticky bottom-0 bg-white dark:bg-[#242526] pt-2">
-                        <Button
-                            onClick={handleSubmitClick}
-                            className="w-full rounded-lg py-1.5 sm:py-2 text-green-500 border-green-500 hover:border-green-600 bg-transparent hover:text-white border-2 hover:bg-green-600 hover:shadow-md flex sm:gap-2"
-                        >
-                            <span><FormattedMessage id="Mission.Direct.Button" /></span>
-                        </Button>
-                    </div>
+                <div>
+                    <Button className="border-black flex flex-col h-full gap-1 justify-center rounded-tr-lg" onClick={() => setOpenDirect(true)}>
+                        <FaMapLocationDot className="w-5 h-5 dark:text-white text-navy-800" />
+                    </Button>
                 </div>
+            </div>
+            <div className="flex w-full h-10 rounded-b-lg border-t dark:border-[#3A3B3C] text-sm">
+                <Button className="w-1/2 h-full border-r dark:border-[#3A3B3C]" onClick={() => setOpenDetail(true)}>
+                    <FormattedMessage id="TaskCard.Detail" />
+                </Button>
+                <Button className="w-1/2 h-full border-r dark:border-[#3A3B3C]" onClick={() => setOpenSign(true)}>
+                    <FormattedMessage id="TaskCard.Sign" />
+                </Button>
+                <Button className="w-1/2 h-full" onClick={() => setOpenImg(true)}>
+                    <FormattedMessage id="TaskCard.Img" />
+                </Button>
+            </div>
+            <div className="flex w-full h-10 rounded-b-lg border-t dark:border-[#3A3B3C] text-sm">
+                <Button className="w-full h-full rounded-b-lg rounded-l-none text-green-500" onClick={handleOpenStatus}>
+                    <FormattedMessage id="TaskCard.Complete" />
+                </Button>
+            </div>
+        </div>
+    </motion.div >
+</>;} catch(error){
+    rend = <p>{`${error}`}</p>
+}
 
-            } />}
-            <motion.div
-                className={`w-full rounded-lg relative bg-white dark:bg-[#242526] shadow-md font-sans`}
-                initial={{ opacity: 0, x: -30 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -30 }}
-                key={keyName}
-            >
-
-                <div className={`w-full flex flex-col text-black dark:text-white`}>
-                    <div className="flex gap-2">
-                        <div className="grow py-4 pl-4">
-                            <div className="flex flex-col">
-                                <p className="truncate font-bold text-center">{data.order_id}</p>
-                            </div>
-                            <div className="flex flex-col mt-2">
-                                <p className="font-bold whitespace-nowrap"><FormattedMessage id="Mission.Detail.Info25" />: </p>
-                                <p className="line-clamp-1">{`${data.order.detail_source}, ${data.order.ward_source}, ${data.order.district_source}, ${data.order.province_source}`}</p>
-                            </div>
-                            <div className="flex flex-col mt-1">
-                                <p className="font-bold whitespace-nowrap"><FormattedMessage id="Mission.Detail.Info26" />: </p>
-                                <p className="line-clamp-1">{`${data.order.detail_dest}, ${data.order.ward_dest}, ${data.order.district_dest}, ${data.order.province_dest}`}</p>
-                            </div>
-                        </div>
-                        <div>
-                            <Button className="border-black flex flex-col h-full gap-1 justify-center rounded-tr-lg" onClick={() => setOpenDirect(true)}>
-                                <FaMapLocationDot className="w-5 h-5 dark:text-white text-navy-800" />
-                            </Button>
-                        </div>
-                    </div>
-                    <div className="flex w-full h-10 rounded-b-lg border-t dark:border-[#3A3B3C] text-sm">
-                        <Button className="w-1/2 h-full border-r dark:border-[#3A3B3C]" onClick={() => setOpenDetail(true)}>
-                            <FormattedMessage id="TaskCard.Detail" />
-                        </Button>
-                        <Button className="w-1/2 h-full border-r dark:border-[#3A3B3C]" onClick={() => setOpenSign(true)}>
-                            <FormattedMessage id="TaskCard.Sign" />
-                        </Button>
-                        <Button className="w-1/2 h-full" onClick={() => setOpenImg(true)}>
-                            <FormattedMessage id="TaskCard.Img" />
-                        </Button>
-                    </div>
-                    <div className="flex w-full h-10 rounded-b-lg border-t dark:border-[#3A3B3C] text-sm">
-                        <Button className="w-full h-full rounded-b-lg rounded-l-none text-green-500" onClick={handleOpenStatus}>
-                            <FormattedMessage id="TaskCard.Complete" />
-                        </Button>
-                    </div>
-                </div>
-            </motion.div >
-        </>
-
-    );
+    return rend;
 };
 
 export default MissionCard;

@@ -26,22 +26,22 @@ const DirectPopup: React.FC<DirectPopupProps> = ({ onClose, dataInitial, toggle 
         toggle();
         if (option == "source") {
             myLocation()
-            if (dataInitial.lat_source && dataInitial.long_source) {
+            if (dataInitial.latSource && dataInitial.longSource) {
                 setDestination({
-                    lat: dataInitial.lat_source,
-                    lng: dataInitial.long_source,
-                    label: `${dataInitial.detail_source}, ${dataInitial.ward_source}, ${dataInitial.district_source}, ${dataInitial.province_source}`,
-                    name: `${dataInitial.detail_source}, ${dataInitial.ward_source}, ${dataInitial.district_source}, ${dataInitial.province_source}`
+                    lat: dataInitial.latSource,
+                    lng: dataInitial.longSource,
+                    label: `${dataInitial.detailSource}, ${dataInitial.wardSource}, ${dataInitial.districtSource}, ${dataInitial.provinceSource}`,
+                    name: `${dataInitial.detailSource}, ${dataInitial.wardSource}, ${dataInitial.districtSource}, ${dataInitial.provinceSource}`
                 })
             } else setDestination(null)
         } else if (option == "destination") {
             myLocation()
-            if (dataInitial.lat_destination && dataInitial.long_destination) {
+            if (dataInitial.latDestination && dataInitial.longDestination) {
                 setDestination({
-                    lat: dataInitial.lat_destination,
-                    lng: dataInitial.long_destination,
-                    label: `${dataInitial.detail_dest}, ${dataInitial.ward_dest}, ${dataInitial.district_dest}, ${dataInitial.province_dest}`,
-                    name: `${dataInitial.detail_dest}, ${dataInitial.ward_dest}, ${dataInitial.district_dest}, ${dataInitial.province_dest}`
+                    lat: dataInitial.latDestination,
+                    lng: dataInitial.longDestination,
+                    label: `${dataInitial.detailDest}, ${dataInitial.wardDest}, ${dataInitial.districtDest}, ${dataInitial.provinceDest}`,
+                    name: `${dataInitial.detailDest}, ${dataInitial.wardDest}, ${dataInitial.districtDest}, ${dataInitial.provinceDest}`
                 })
             } else setDestination(null)
         }

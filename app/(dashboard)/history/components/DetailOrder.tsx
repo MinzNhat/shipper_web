@@ -164,7 +164,7 @@ const DetailOrder: React.FC<DetailOrderProps> = ({ onClose, dataInitial }) => {
                             {dataInitial.nameSender || intl.formatMessage({ id: "Mission.Detail.Info17" })}
                         </p>
                         <p className="whitespace-nowrap flex flex-row gap-2">
-                            {`${dataInitial.detailSource}, ${dataInitial.wardSource}, ${dataInitial.districtSource}, ${dataInitial.provinceSource}`}
+                            {`${dataInitial.detailSource??"Null"??"No infor"}, ${dataInitial.wardSource}, ${dataInitial.districtSource}, ${dataInitial.provinceSource}`}
                         </p>
                         <p className="whitespace-nowrap flex flex-row gap-2">
                             {dataInitial.phoneNumberSender || intl.formatMessage({ id: "Mission.Detail.Info17" })}

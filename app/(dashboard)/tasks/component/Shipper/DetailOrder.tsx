@@ -20,7 +20,7 @@ import { FaSave } from "react-icons/fa";
 import SubmitPopup from "@/components/submit";
 import NotiPopup from "@/components/notification";
 interface UpdatingOrderCondition {
-    order_id: string,
+    orderId: string,
 }
 
 interface UpdatingOrderInfo {
@@ -29,7 +29,7 @@ interface UpdatingOrderInfo {
     width: number,
     length: number,
     COD: number,
-    status_code: number,
+    statusCode: number,
 }
 interface DetailPopupProps {
     onClose: () => void;
@@ -42,50 +42,50 @@ const DetailOrder: React.FC<DetailPopupProps> = ({ onClose, dataInitial, reloadD
     const [openConfirm, setOpenConfirm] = useState(false);
     const [message, setMessage] = useState("");
     const [data2, setData2] = useState({
-        order_id: "",
-        name_sender: "",
-        detail_source: "",
-        ward_source: "",
-        district_source: "",
-        province_source: "",
-        phone_number_sender: "",
-        name_receiver: "",
-        detail_dest: "",
-        ward_dest: "",
-        district_dest: "",
-        province_dest: "",
+        orderId: "",
+        nameSender: "",
+        detailSource: "",
+        wardSource: "",
+        districtSource: "",
+        provinceSource: "",
+        phoneNumberSender: "",
+        nameReceiver: "",
+        detailDest: "",
+        wardDest: "",
+        districtDest: "",
+        provinceDest: "",
         fee: "",
-        COD: "",
+        cod: "",
         mass: "",
         length: "",
         width: "",
         height: "",
-        status_code: "",
+        statusCode: "",
         qrcode: "",
-        phone_number_receiver: ""
+        phoneNumberReceiver: ""
     })
     const [data, setData] = useState({
-        order_id: "",
-        name_sender: "",
-        detail_source: "",
-        ward_source: "",
-        district_source: "",
-        province_source: "",
-        phone_number_sender: "",
-        name_receiver: "",
-        detail_dest: "",
-        ward_dest: "",
-        district_dest: "",
-        province_dest: "",
+        orderId: "",
+        nameSender: "",
+        detailSource: "",
+        wardSource: "",
+        districtSource: "",
+        provinceSource: "",
+        phoneNumberSender: "",
+        nameReceiver: "",
+        detailDest: "",
+        wardDest: "",
+        districtDest: "",
+        provinceDest: "",
         fee: "",
-        COD: "",
+        cod: "",
         mass: "",
         length: "",
         width: "",
         height: "",
-        status_code: "",
+        statusCode: "",
         qrcode: "",
-        phone_number_receiver: ""
+        phoneNumberReceiver: ""
     });
     const [isEditing, setIsEditing] = useState(false);
     const [imageUrls, setImageUrls] = useState<string[]>([]);
@@ -105,7 +105,7 @@ const DetailOrder: React.FC<DetailPopupProps> = ({ onClose, dataInitial, reloadD
     const ordersOperation = new OrdersOperation();
     const [loading, setLoading] = useState(false)
     const handleFetchOrder = async () => {
-        const response = await ordersOperation.get({ orderId: dataInitial.order_id })
+        const response = await ordersOperation.get({ orderId: dataInitial.orderId })
         if (!response.error) {
             setData(response.data[0])
             setData2(response.data[0])
@@ -163,7 +163,7 @@ const DetailOrder: React.FC<DetailPopupProps> = ({ onClose, dataInitial, reloadD
                 mass: "",
             });
 
-            if (data.COD != data2.COD || data.mass != data2.mass || data.height != data2.height ||
+            if (data.cod != data2.cod || data.mass != data2.mass || data.height != data2.height ||
                 data.length != data2.length || data.width != data2.width
             ) {
                 setMessage(intl.formatMessage({ id: 'Mission.Detail.Alert2' }));
@@ -186,7 +186,7 @@ const DetailOrder: React.FC<DetailPopupProps> = ({ onClose, dataInitial, reloadD
         const fetchImages = async () => {
             try {
                 const condition: UpdatingOrderImageParams = {
-                    orderId: dataInitial.order_id,
+                    orderId: dataInitial.orderId,
                     taskId: dataInitial.id,
                     type: "send"
                 };
@@ -200,7 +200,7 @@ const DetailOrder: React.FC<DetailPopupProps> = ({ onClose, dataInitial, reloadD
         const fetchImages2 = async () => {
             try {
                 const condition: UpdatingOrderImageParams = {
-                    orderId: dataInitial.order_id,
+                    orderId: dataInitial.orderId,
                     taskId: dataInitial.id,
                     type: "receive"
                 };
@@ -258,21 +258,21 @@ const DetailOrder: React.FC<DetailPopupProps> = ({ onClose, dataInitial, reloadD
             height: parseFloat(data.height),
             width: parseFloat(data.width),
             length: parseFloat(data.length),
-            COD: data.COD ? parseFloat(data.COD) : 0,
-            status_code: parseFloat(data.status_code)
+            COD: data.cod ? parseFloat(data.cod) : 0,
+            statusCode: parseFloat(data.statusCode)
         };
 
         let updatingOrderCondition: UpdatingOrderCondition = {
-            order_id: data.order_id,
+            orderId: data.orderId,
         };
         setLoading(true)
-        const response = await ordersOperation.update(updatingOrderInfo, { orderId: updatingOrderCondition.order_id });
+        const response = await ordersOperation.update(updatingOrderInfo, { orderId: updatingOrderCondition.orderId });
         setOpenConfirm(false)
         if (response.error) {
             setMessage(response.message);
             setOpenError(true)
         } else {
-            setData({ ...data, order_id: "" });
+            setData({ ...data, orderId: "" });
             handleFetchOrder()
             setIsEditing(false);
             setReload(true)
@@ -316,7 +316,7 @@ const DetailOrder: React.FC<DetailPopupProps> = ({ onClose, dataInitial, reloadD
                 </div>
 
                 <div className="flex flex-row gap-3 text-[#000000] dark:text-white w-full">
-                    {data.order_id != "" && !loading ? <div className="w-full">
+                    {data.orderId != "" && !loading ? <div className="w-full">
 
                         <div className="flex flex-col gap-5 overflow-y-scroll no-scrollbar p-4 rounded-xl md:mr-2 mb-2 w-full">
 
@@ -332,31 +332,31 @@ const DetailOrder: React.FC<DetailPopupProps> = ({ onClose, dataInitial, reloadD
                             </div>
                             <div className="flex">
                                 <div className="w-1/2 font-bold text-base"><FormattedMessage id="Mission.Detail.Info1" />:</div>
-                                <div className="w-1/2 pl-2">{data.order_id}</div>
+                                <div className="w-1/2 pl-2">{data.orderId}</div>
                             </div>
                             <div className="flex">
                                 <div className="w-1/2 font-bold text-base"><FormattedMessage id="Mission.Detail.Info9" />:</div>
-                                <div className="w-1/2 pl-2">{data.name_sender}</div>
+                                <div className="w-1/2 pl-2">{data.nameSender}</div>
                             </div>
                             <div className="flex">
                                 <div className="w-1/2 font-bold text-base"><FormattedMessage id="Mission.Detail.Info3" />:</div>
-                                <div className="w-1/2 pl-2">{`${data.detail_source}, ${data.ward_source}, ${data.district_source}, ${data.province_source}`}</div>
+                                <div className="w-1/2 pl-2">{`${data.detailSource??"Null"}, ${data.wardSource}, ${data.districtSource}, ${data.provinceSource}`}</div>
                             </div>
                             <div className="flex">
                                 <div className="w-1/2 font-bold text-base"><FormattedMessage id="Mission.Detail.Info10" />:</div>
-                                <div className="w-1/2 pl-2">{data.phone_number_sender}</div>
+                                <div className="w-1/2 pl-2">{data.phoneNumberSender}</div>
                             </div>
                             <div className="flex">
                                 <div className="w-1/2 font-bold text-base"><FormattedMessage id="Mission.Detail.Info11" />:</div>
-                                <div className="w-1/2 pl-2">{data.name_receiver}</div>
+                                <div className="w-1/2 pl-2">{data.nameReceiver}</div>
                             </div>
                             <div className="flex">
                                 <div className="w-1/2 font-bold text-base"><FormattedMessage id="Mission.Detail.Info3" />:</div>
-                                <div className="w-1/2 pl-2">{`${data.detail_dest}, ${data.ward_dest}, ${data.district_dest}, ${data.province_dest}`}</div>
+                                <div className="w-1/2 pl-2">{`${data.detailDest}, ${data.wardDest}, ${data.districtDest}, ${data.provinceDest}`}</div>
                             </div>
                             <div className="flex">
                                 <div className="w-1/2 font-bold text-base"><FormattedMessage id="Mission.Detail.Info12" />:</div>
-                                <div className="w-1/2 pl-2">{data.phone_number_receiver}</div>
+                                <div className="w-1/2 pl-2">{data.phoneNumberReceiver}</div>
                             </div>
                             <div className="flex">
                                 <div className="w-1/2 font-bold text-base"><FormattedMessage id="Mission.Detail.Info13" />:</div>
@@ -365,10 +365,10 @@ const DetailOrder: React.FC<DetailPopupProps> = ({ onClose, dataInitial, reloadD
                             {!isEditing ? (
                                 <div className="flex">
                                     <div className="w-1/2 font-bold text-base"><FormattedMessage id="Mission.Detail.Info4" />:</div>
-                                    <div className="w-1/2 pl-2">{parseFloat(data.COD).toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}</div>
+                                    <div className="w-1/2 pl-2">{parseFloat(data.cod).toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}</div>
                                 </div>
                             ) :
-                                <InputWithError id="COD" error={""} label={intl.formatMessage({ id: "Mission.Detail.Info4" })} onChange={handleNumericInputChange} value={data.COD} />
+                                <InputWithError id="COD" error={""} label={intl.formatMessage({ id: "Mission.Detail.Info4" })} onChange={handleNumericInputChange} value={data.cod} />
                             }
                             {!isEditing ? (
                                 <div className="flex">

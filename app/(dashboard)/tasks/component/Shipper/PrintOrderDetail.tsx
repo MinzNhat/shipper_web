@@ -31,31 +31,31 @@ const PrintOrderDetails = forwardRef<HTMLDivElement, PrintOrderDetailsProps>((pr
             <div className='text-lg px-10'>
                 <div className="mb-2">
                     <span className="font-bold"><FormattedMessage id="Mission.Detail.Info1" />:</span>
-                    <span className="pl-2">{data.order_id}</span>
+                    <span className="pl-2">{data.orderId}</span>
                 </div>
                 <div className="mb-2">
                     <span className="font-bold"><FormattedMessage id="Mission.Detail.Info9" />:</span>
-                    <span className="pl-2">{data.name_sender}</span>
+                    <span className="pl-2">{data.nameSender}</span>
                 </div>
                 <div className="mb-2">
                     <span className="font-bold"><FormattedMessage id="Mission.Detail.Info3" />:</span>
-                    <span className="pl-2">{`${data.detail_source}, ${data.ward_source}, ${data.district_source}, ${data.province_source}`}</span>
+                    <span className="pl-2">{`${data.detailSource??"Null"}, ${data.wardSource}, ${data.districtSource}, ${data.provinceSource}`}</span>
                 </div>
                 <div className="mb-2">
                     <span className="font-bold"><FormattedMessage id="Mission.Detail.Info10" />:</span>
-                    <span className="pl-2">{data.phone_number_sender}</span>
+                    <span className="pl-2">{data.phoneNumberSender}</span>
                 </div>
                 <div className="mb-2">
                     <span className="font-bold"><FormattedMessage id="Mission.Detail.Info11" />:</span>
-                    <span className="pl-2">{data.name_receiver}</span>
+                    <span className="pl-2">{data.nameReceiver}</span>
                 </div>
                 <div className="mb-2">
                     <span className="font-bold"><FormattedMessage id="Mission.Detail.Info3" />:</span>
-                    <span className="pl-2">{`${data.detail_dest}, ${data.ward_dest}, ${data.district_dest}, ${data.province_dest}`}</span>
+                    <span className="pl-2">{`${data.detailDest}, ${data.wardDest}, ${data.districtDest}, ${data.provinceDest}`}</span>
                 </div>
                 <div className="mb-2">
                     <span className="font-bold"><FormattedMessage id="Mission.Detail.Info12" />:</span>
-                    <span className="pl-2">{data.phone_number_receiver}</span>
+                    <span className="pl-2">{data.phoneNumberReceiver}</span>
                 </div>
                 <div className="mb-2">
                     <span className="font-bold"><FormattedMessage id="Mission.Detail.Info13" />:</span>

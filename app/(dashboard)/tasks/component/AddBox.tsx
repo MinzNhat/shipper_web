@@ -81,7 +81,7 @@ const AddPanel = () => {
         setTask(null);
         let response = null;
         let datas = [];
-        console.log("ok1");
+        console.log("fetch");
         if (passData?.role == "PARTNER_DRIVER") {
             response = await drivertasks.getTask({ option: option });
         } else {
@@ -90,10 +90,9 @@ const AddPanel = () => {
             console.log(response);
             for (var i = 0; i < response.data.length; i++) {
                 var data = await ordersOperation.get({ orderId: (response.data[i].orderId) });
-                console.log(data);
-                datas.push(data);
+                console.log(data.data[0]);
+                datas.push(data.data[0]);
             }
-            console.log("ok");
         }
         console.log("ok");
 
@@ -105,10 +104,12 @@ const AddPanel = () => {
 
     const handleReloadData = async () => {
         handleFetchTask(selectedOption);
+        console.log("reload");
     };
 
     useEffect(() => {
-        if (passData && passData.role) {
+        console.log("passdata",passData);
+        if (true || (passData && passData.role)) {
             handleFetchTask(selectedOption);
         }
     }, [passData, selectedOption]);

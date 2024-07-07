@@ -27,7 +27,7 @@ const TaskCard = ({ data, toggle, keyName, reloadData }: { data: any, toggle: an
         id: parseFloat(data.id)
     };
     const undertakingShipmentInfo = {
-        shipment_id: data.shipment_id,
+        shipmentId: data.shipmentId,
     };
     const intl = useIntl();
     const getUserLocation = () => {
@@ -81,7 +81,7 @@ const TaskCard = ({ data, toggle, keyName, reloadData }: { data: any, toggle: an
 
     const handleUndertake = async () => {
         try {
-            const response = await shipment.undertakeShiment(undertakingShipmentInfo.shipment_id);
+            const response = await shipment.undertakeShiment(undertakingShipmentInfo.shipmentId);
             setOpenConfirm(false);
             if (!!response.error || !!response.error.error) {
                 setMessage(response.message || response.error.message);
@@ -128,19 +128,19 @@ const TaskCard = ({ data, toggle, keyName, reloadData }: { data: any, toggle: an
                     </div>
                     <div className="w-full h-full flex-col">
                         <p className="whitespace-nowrap flex flex-row gap-2">
-                            {data.shipment_id || intl.formatMessage({ id: "Mission.Detail.Info17" })}
+                            {data.shipmentId || intl.formatMessage({ id: "Mission.Detail.Info17" })}
                         </p>
                         <p className="whitespace-nowrap flex flex-row gap-2">
-                            {data.shipment?.vehicle_id || intl.formatMessage({ id: "Mission.Detail.Info17" })}
+                            {data.shipment?.vehicleId || intl.formatMessage({ id: "Mission.Detail.Info17" })}
                         </p>
                         <p className="flex flex-col sm:flex-row sm:gap-2">
                             {data.shipment?.mass || intl.formatMessage({ id: "Mission.Detail.Info17" })}
                         </p>
                         <p className="whitespace-nowrap flex flex-row gap-2">
-                            {createTime(data.shipment?.created_at) || intl.formatMessage({ id: "Mission.Detail.Info17" })}
+                            {createTime(data.shipment?.createdAt) || intl.formatMessage({ id: "Mission.Detail.Info17" })}
                         </p>
                         <p className="whitespace-nowrap flex flex-row gap-2">
-                            {createTime(data.shipment?.last_update) || intl.formatMessage({ id: "Mission.Detail.Info17" })}
+                            {createTime(data.shipment?.lastUpdate) || intl.formatMessage({ id: "Mission.Detail.Info17" })}
                         </p>
                     </div>
                 </div>
@@ -157,7 +157,7 @@ const TaskCard = ({ data, toggle, keyName, reloadData }: { data: any, toggle: an
                     <div className="flex gap-2">
                         <div className="grow py-4 pl-4">
                             <div className="flex flex-col">
-                                <p className="truncate font-bold text-center">{data.shipment_id}</p>
+                                <p className="truncate font-bold text-center">{data.shipmentId}</p>
                             </div>
                             <div className="flex flex-row mt-2">
                                 <p className="font-bold whitespace-nowrap"><FormattedMessage id="TaskCard.CurrentLocation" />: </p>

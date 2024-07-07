@@ -1,5 +1,9 @@
 const FormData = require("form-data");
-import axios, { AxiosResponse,AxiosError } from "axios";
+import axios, { AxiosResponse, AxiosError } from "axios";
+import JSZip from 'jszip';
+// import { Buffer } from 'buffer';
+// import * as unzipper from 'unzipper';
+// import AdmZip from 'adm-zip';
 
 export enum Role {
     CUSTOMER,
@@ -43,7 +47,7 @@ export interface LoginPayload {
 
 export class AuthOperation {
     private baseUrl: String;
-    
+
     constructor() {
         this.baseUrl = "https://api2.tdlogistics.net.vn/v2/auth";
     }
@@ -52,7 +56,7 @@ export class AuthOperation {
         try {
             const response = await axios.post(`${this.baseUrl}/otp/send`, payload);
             return { error: response.data.error, message: response.data.message, data: response.data.data };
-        } catch (error : any) {
+        } catch (error: any) {
             console.log("Error sending otp: ", error?.response?.data);
             console.error("Request that caused the error: ", error?.request);
             return { error: error?.response?.data, request: error?.request, status: error.response ? error.response.status : null };
@@ -65,7 +69,7 @@ export class AuthOperation {
                 withCredentials: true
             });
             return { error: response.data.error, message: response.data.message, data: response.data.data };
-        } catch (error : any) {
+        } catch (error: any) {
             console.log("Error verifying otp: ", error?.response?.data);
             console.error("Request that caused the error: ", error?.request);
             return { error: error?.response?.data, request: error?.request, status: error.response ? error.response.status : null };
@@ -79,24 +83,24 @@ export class AuthOperation {
             });
 
             return { error: response.data.error, message: response.data.message, data: response.data.data };
-        } catch (error : any) {
+        } catch (error: any) {
             console.log("Error login: ", error?.response?.data);
             console.error("Request that caused the error: ", error?.request);
             return { error: error?.response?.data, request: error?.request, status: error.response ? error.response.status : null };
         }
     }
 
-    async login(account : string, password: string) {
+    async login(account: string, password: string) {
         try {
             const response = await axios.post(`${this.baseUrl}/basic/login`, {
-                "username" : account,
-                "password" : password
+                "username": account,
+                "password": password
             }, {
                 withCredentials: true
             });
 
             return { error: response.data.error, message: response.data.message, data: response.data.data };
-        } catch (error : any) {
+        } catch (error: any) {
             console.log("Error login: ", error?.response?.data);
             console.error("Request that caused the error: ", error?.request);
             return { error: error?.response?.data, request: error?.request, status: error.response ? error.response.status : null };
@@ -137,7 +141,7 @@ export class AccountOperation {
             });
 
             return { error: response.data.error, message: response.data.message, data: response.data.data };
-        } catch (error : any) {
+        } catch (error: any) {
             console.log("Error updating account: ", error?.response?.data);
             console.error("Request that caused the error: ", error?.request);
             return { error: error?.response?.data, request: error?.request, status: error.response ? error.response.status : null };
@@ -151,7 +155,7 @@ export class AccountOperation {
             });
 
             return { error: response.data.error, message: response.data.message, data: response.data.data };
-        } catch (error : any) {
+        } catch (error: any) {
             console.log("Error updating password: ", error?.response?.data);
             console.error("Request that caused the error: ", error?.request);
             return { error: error?.response?.data, request: error?.request, status: error.response ? error.response.status : null };
@@ -165,7 +169,7 @@ export class AccountOperation {
             });
 
             return { error: response.data.error, message: response.data.message, data: response.data.data };
-        } catch (error : any) {
+        } catch (error: any) {
             console.log("Error updating password: ", error?.response?.data);
             console.error("Request that caused the error: ", error?.request);
             return { error: error?.response?.data, request: error?.request, status: error.response ? error.response.status : null };
@@ -215,7 +219,7 @@ export class CustomerOperation {
             });
             console.log(response);
             return { error: response.data.error, message: response.data.message, data: response.data.data };
-        } catch (error : any) {
+        } catch (error: any) {
             console.log("Error getting authenticated customer info: ", error?.response?.data);
             console.error("Request that caused the error: ", error?.request);
             return { error: error?.response?.data, request: error?.request, status: error.response ? error.response.status : null };
@@ -229,7 +233,7 @@ export class CustomerOperation {
             });
 
             return { error: response.data.error, message: response.data.message, data: response.data.data };
-        } catch (error : any) {
+        } catch (error: any) {
             console.log("Error updating customer information: ", error?.response?.data);
             console.error("Request that caused the error: ", error?.request);
             return { error: error?.response?.data, request: error?.request, status: error.response ? error.response.status : null };
@@ -243,7 +247,7 @@ export class CustomerOperation {
             });
 
             return { error: response.data.error, message: response.data.message, data: response.data.data };
-        } catch (error : any) {
+        } catch (error: any) {
             console.log("Error searching customer information: ", error?.response?.data);
             console.error("Request that caused the error: ", error?.request);
             return { error: error?.response?.data, request: error?.request, status: error.response ? error.response.status : null };
@@ -253,14 +257,14 @@ export class CustomerOperation {
     async updateAvatar(payload: UpdatingAvatarPayload) {
         try {
             const formData = new FormData();
-			formData.append('avatar', payload.avatar);
+            formData.append('avatar', payload.avatar);
 
             const response = await axios.put(`${this.baseUrl}/avatar/update`, formData, {
                 withCredentials: true
             });
 
             return { error: response.data.error, message: response.data.message, data: response.data.data };
-        } catch (error : any) {
+        } catch (error: any) {
             console.log("Error updating avatar: ", error?.response?.data);
             console.error("Request that caused the error: ", error?.request);
             return { error: error?.response?.data, request: error?.request, status: error.response ? error.response.status : null };
@@ -274,7 +278,7 @@ export class CustomerOperation {
             });
 
             return response.data;
-        } catch (error : any) {
+        } catch (error: any) {
             console.log("Error getting avatar: ", error?.response?.data);
             console.error("Request that caused the error: ", error?.request);
             return { error: error?.response?.data, request: error?.request, status: error.response ? error.response.status : null };
@@ -360,7 +364,7 @@ export interface UpdatingOrderPayload {
     width?: number,
     length?: number,
     COD?: number,
-    statusCode?: number, 
+    statusCode?: number,
 }
 
 export interface CancelingOrderCriteria {
@@ -534,14 +538,36 @@ export class OrdersOperation {
         try {
             const response = await axios.get(`${this.baseUrl}/image/get?orderId=${params.orderId}&type=${params.type}`, {
                 withCredentials: true,
+                responseType: 'arraybuffer',
             });
-
-            return response.data;
+    
+            const zip = await JSZip.loadAsync(response.data);
+            const extractedFiles: Uint8Array[] = [];
+    
+            const files = Object.keys(zip.files);
+            for (const filename of files) {
+                if (!zip.files[filename].dir) {
+                    const fileData = await zip.files[filename].async('uint8array');
+                    extractedFiles.push(fileData);
+                }
+            }
+    
+            return { data: extractedFiles };
         } catch (error: any) {
-            console.log("Error getting order image: ", error?.response?.data);
+            console.log("Error getting images: ", error?.response?.data);
             console.error("Request that caused the error: ", error?.request);
-            return { error: error?.response?.data, request: error?.request, status: error.response ? error.response.status : null };
+            throw error; // Re-throw the error for the caller to handle
         }
+        //     const response = await axios.get(`${this.baseUrl}/image/get?orderId=${params.orderId}&type=${params.type}`, {
+        //         withCredentials: true,
+        //     });
+
+        //     return response.data;
+        // } catch (error: any) {
+        //     console.log("Error getting order image: ", error?.response?.data);
+        //     console.error("Request that caused the error: ", error?.request);
+        //     return { error: error?.response?.data, request: error?.request, status: error.response ? error.response.status : null };
+        // }
     }
 
     async getSignature(params: GettingOrderImageParams) {
@@ -590,7 +616,7 @@ export interface CreatingStaffByAgencyPayload {
     account: {
         id: string
     },
-	fullname: string,
+    fullname: string,
     dateOfBirth: string,
     cccd: string,
     role: Role,
@@ -614,7 +640,7 @@ export interface CreatingStaffByAdminPayload {
     cccd: string,
     role: Role,
     position: string,
-    salary: number, 
+    salary: number,
     paidSalary: number,
     province: string,
     district: string,
@@ -622,17 +648,17 @@ export interface CreatingStaffByAdminPayload {
     detailAddress: string,
     managedWards?: Array<String>
 }
-  
+
 export interface FindingStaffByStaffCriteria {
     staffId: string,
 }
-  
+
 export interface FindingStaffByAdminCriteria {
     agencyId?: string,
     staffId?: string,
     fullname?: string,
-    dateOfBirth?: string, 
-    cccd?: string, 
+    dateOfBirth?: string,
+    cccd?: string,
     role?: Role,
     province?: string,
     district?: string,
@@ -642,60 +668,61 @@ export interface FindingStaffByAdminCriteria {
 export interface FindingStaffByAgencyCriteria {
     staffId?: string,
     fullname?: string,
-    dateOfBirth?: string, 
-    cccd?: string, 
+    dateOfBirth?: string,
+    cccd?: string,
     role?: Role,
     province?: string,
     district?: string,
     town?: string,
 }
-  
+
 export interface UpdatingStaffPayload {
     fullname?: string,
     username?: string,
     dateOfBirth?: string,
     role?: Role,
     position?: string,
-    salary?: number, 
-    paidSalary?: number, 
+    salary?: number,
+    paidSalary?: number,
     province?: string,
     district?: string,
     town?: string,
     detailAddress?: string,
     managedWards?: Array<String>
 }
-  
+
 export interface UpdatingStaffCriteria {
     staffId: string,
 }
-  
+
 export interface DeletingStaffCriteria {
     staffId: string,
 };
-  
+
 export interface UpdatingAvatarStaffPayload {
     avatar: File,
 };
-  
+
 export interface FindingAvatarCriteria {
     staffId: string,
 }
-  
+
 export class StaffOperation {
-	private baseUrl: string;
+    private baseUrl: string;
 
-	constructor() {
-		this.baseUrl = "https://api2.tdlogistics.net.vn/v2/staffs";
-	}
+    constructor() {
+        this.baseUrl = "https://api2.tdlogistics.net.vn/v2/staffs";
+    }
 
-	// ROLE: any
-	async getAuthenticatedStaffInfo() {
+    // ROLE: any
+    async getAuthenticatedStaffInfo() {
         try {
             const response: AxiosResponse = await axios.get(`${this.baseUrl}/`, {
                 withCredentials: true,
             });
             console.log(response);
-            
+            console.log('Okeeeeeeee');
+
             return { error: response.data.error, data: response.data.data, message: response.data.message };
         } catch (error: any) {
             console.log("Error get authenticated staff information: ", error?.response?.data);
@@ -704,152 +731,152 @@ export class StaffOperation {
         }
     }
 
-	// ROLE: ADMIN, TELLER, HUMAN_RESOURCE_MANAGER, COMPLAINTS_SOLVER
-	async findByAdmin(conditions: FindingStaffByAdminCriteria) {
-		try {
-			const response: AxiosResponse = await axios.post(`${this.baseUrl}/search`, conditions, {
-				withCredentials: true,
-			});
-			
-			return { error: response.data.error, data: response.data.data, message: response.data.message };
-		}     
-		catch (error: any) {
-			console.log("Error getting staffs: ", error?.response?.data);
+    // ROLE: ADMIN, TELLER, HUMAN_RESOURCE_MANAGER, COMPLAINTS_SOLVER
+    async findByAdmin(conditions: FindingStaffByAdminCriteria) {
+        try {
+            const response: AxiosResponse = await axios.post(`${this.baseUrl}/search`, conditions, {
+                withCredentials: true,
+            });
+
+            return { error: response.data.error, data: response.data.data, message: response.data.message };
+        }
+        catch (error: any) {
+            console.log("Error getting staffs: ", error?.response?.data);
             console.error("Request that caused the error: ", error?.request);
             return { error: error?.response?.data, request: error?.request, status: error.response ? error.response.status : null };
-		}
-	}
+        }
+    }
 
     // ROLE: ADMIN, TELLER, HUMAN_RESOURCE_MANAGER, COMPLAINTS_SOLVER
-	async findByAgency(conditions: FindingStaffByAgencyCriteria) {
-		try {
-			const response: AxiosResponse = await axios.post(`${this.baseUrl}/search`, conditions, {
-				withCredentials: true,
-			});
-			
-			return { error: response.data.error, data: response.data.data, message: response.data.message };
-		}     
-		catch (error: any) {
-			console.log("Error getting staffs: ", error?.response?.data);
-            console.error("Request that caused the error: ", error?.request);
-            return { error: error?.response?.data, request: error?.request, status: error.response ? error.response.status : null };
-		}
-	}
+    async findByAgency(conditions: FindingStaffByAgencyCriteria) {
+        try {
+            const response: AxiosResponse = await axios.post(`${this.baseUrl}/search`, conditions, {
+                withCredentials: true,
+            });
 
-	// ROLE: ADMIN, MANAGER, HUMAN_RESOURCE_MANAGER
-	async createByAdmin(info: CreatingStaffByAdminPayload) {
-		try {
-			const response: AxiosResponse = await axios.post(`${this.baseUrl}/create`, info, {
-				withCredentials: true,
-			});
-			
-			return { error: response.data.error, message: response.data.message, data: response.data.data };
-		} 
-		catch (error: any) {
-			console.log("Error create new staff: ", error?.response?.data);
+            return { error: response.data.error, data: response.data.data, message: response.data.message };
+        }
+        catch (error: any) {
+            console.log("Error getting staffs: ", error?.response?.data);
             console.error("Request that caused the error: ", error?.request);
             return { error: error?.response?.data, request: error?.request, status: error.response ? error.response.status : null };
-		}
-	}
+        }
+    }
 
-	// ROLE: AGENCY_MANAGER, AGENCY_HUMAN_RESOURCE_MANAGER
-	async createByAgency(info: CreatingStaffByAgencyPayload) {
-		try {
-			const response: AxiosResponse = await axios.post(`${this.baseUrl}/create`, info, {
-				withCredentials: true,
-			});
-			
-			const data = response.data;
-			return { error: data.error, message: data.message, data: response.data.data };
-		} 
-		catch (error: any) {
-			console.log("Error create new staff: ", error?.response?.data);
-            console.error("Request that caused the error: ", error?.request);
-            return { error: error?.response?.data, request: error?.request, status: error.response ? error.response.status : null };
-		}
-	}
+    // ROLE: ADMIN, MANAGER, HUMAN_RESOURCE_MANAGER
+    async createByAdmin(info: CreatingStaffByAdminPayload) {
+        try {
+            const response: AxiosResponse = await axios.post(`${this.baseUrl}/create`, info, {
+                withCredentials: true,
+            });
 
-	// ROLE: ADMIN, MANAGER, HUMAN_RESOURCE_MANAGER, AGENCY_MANAGER, AGENCY_HUMAN_RESOURCE_MANAGER
-	async update(info: UpdatingStaffPayload, condition: UpdatingStaffCriteria) {
-		try {
-			const response: AxiosResponse = await axios.put(`${this.baseUrl}/update?staffId=${condition.staffId}`, info, {
-				withCredentials: true,
-			});
-			
-			const data = response.data;
-			return { error: data.error, message: data.message, data: response.data.data };
-		} 
-		catch (error: any) {
-			console.log("Error create new staff: ", error?.response?.data);
+            return { error: response.data.error, message: response.data.message, data: response.data.data };
+        }
+        catch (error: any) {
+            console.log("Error create new staff: ", error?.response?.data);
             console.error("Request that caused the error: ", error?.request);
             return { error: error?.response?.data, request: error?.request, status: error.response ? error.response.status : null };
-		}
-	}
+        }
+    }
+
+    // ROLE: AGENCY_MANAGER, AGENCY_HUMAN_RESOURCE_MANAGER
+    async createByAgency(info: CreatingStaffByAgencyPayload) {
+        try {
+            const response: AxiosResponse = await axios.post(`${this.baseUrl}/create`, info, {
+                withCredentials: true,
+            });
+
+            const data = response.data;
+            return { error: data.error, message: data.message, data: response.data.data };
+        }
+        catch (error: any) {
+            console.log("Error create new staff: ", error?.response?.data);
+            console.error("Request that caused the error: ", error?.request);
+            return { error: error?.response?.data, request: error?.request, status: error.response ? error.response.status : null };
+        }
+    }
+
+    // ROLE: ADMIN, MANAGER, HUMAN_RESOURCE_MANAGER, AGENCY_MANAGER, AGENCY_HUMAN_RESOURCE_MANAGER
+    async update(info: UpdatingStaffPayload, condition: UpdatingStaffCriteria) {
+        try {
+            const response: AxiosResponse = await axios.put(`${this.baseUrl}/update?staffId=${condition.staffId}`, info, {
+                withCredentials: true,
+            });
+
+            const data = response.data;
+            return { error: data.error, message: data.message, data: response.data.data };
+        }
+        catch (error: any) {
+            console.log("Error create new staff: ", error?.response?.data);
+            console.error("Request that caused the error: ", error?.request);
+            return { error: error?.response?.data, request: error?.request, status: error.response ? error.response.status : null };
+        }
+    }
 
     async getManagedWards(staffId: string) {
         try {
-			const response: AxiosResponse = await axios.get(`${this.baseUrl}/managed_wards/get?staffId=${staffId}`, {
-				withCredentials: true,
-			});
-			
-			const data = response.data;
-			return { error: data.error, message: data.message, data: response.data.data };
-		} 
-		catch (error: any) {
-			console.log("Error getting managed wards: ", error?.response?.data);
+            const response: AxiosResponse = await axios.get(`${this.baseUrl}/managed_wards/get?staffId=${staffId}`, {
+                withCredentials: true,
+            });
+
+            const data = response.data;
+            return { error: data.error, message: data.message, data: response.data.data };
+        }
+        catch (error: any) {
+            console.log("Error getting managed wards: ", error?.response?.data);
             console.error("Request that caused the error: ", error?.request);
             return { error: error?.response?.data, request: error?.request, status: error.response ? error.response.status : null };
-		}
+        }
     }
 
-	// ROLE: ADMIN, MANAGER, HUMAN_RESOURCE_MANAGER, AGENCY_MANAGER, AGENCY_HUMAN_RESOURCE_MANAGER
-	async deleteStaff(condition: DeletingStaffCriteria) {
-		try {
-			const response = await axios.delete(`${this.baseUrl}/delete?staffId=${condition.staffId}`, {
-				withCredentials: true,
-			});
-
-			return { error: response.data.error, message: response.data.message, data: response.data.data };
-		} 
-		catch (error: any) {
-			console.log("Error deleting staff: ", error?.response?.data);
-            console.error("Request that caused the error: ", error?.request);
-            return { error: error?.response?.data, request: error?.request, status: error.response ? error.response.status : null };
-		}
-	}
-
-	// ROLE: ADMIN, MANAGER, HUMAN_RESOURCE_MANAGER, AGENCY_MANAGER, AGENCY_HUMAN_RESOURCE_MANAGER
-	async updateAvatar(info: UpdatingAvatarStaffPayload, condition: UpdatingStaffCriteria) {
-		try {       
-			const formData = new FormData();
-			formData.append('avatar', info.avatar);
-
-			const response: AxiosResponse = await axios.put(`${this.baseUrl}/avatar/update?staffId=${condition.staffId}`, formData , {
-				withCredentials: true,
-			});
+    // ROLE: ADMIN, MANAGER, HUMAN_RESOURCE_MANAGER, AGENCY_MANAGER, AGENCY_HUMAN_RESOURCE_MANAGER
+    async deleteStaff(condition: DeletingStaffCriteria) {
+        try {
+            const response = await axios.delete(`${this.baseUrl}/delete?staffId=${condition.staffId}`, {
+                withCredentials: true,
+            });
 
             return { error: response.data.error, message: response.data.message, data: response.data.data };
-		} catch (error: any) {
-			console.error('Error uploading image:', error?.response?.data);
+        }
+        catch (error: any) {
+            console.log("Error deleting staff: ", error?.response?.data);
+            console.error("Request that caused the error: ", error?.request);
+            return { error: error?.response?.data, request: error?.request, status: error.response ? error.response.status : null };
+        }
+    }
+
+    // ROLE: ADMIN, MANAGER, HUMAN_RESOURCE_MANAGER, AGENCY_MANAGER, AGENCY_HUMAN_RESOURCE_MANAGER
+    async updateAvatar(info: UpdatingAvatarStaffPayload, condition: UpdatingStaffCriteria) {
+        try {
+            const formData = new FormData();
+            formData.append('avatar', info.avatar);
+
+            const response: AxiosResponse = await axios.put(`${this.baseUrl}/avatar/update?staffId=${condition.staffId}`, formData, {
+                withCredentials: true,
+            });
+
+            return { error: response.data.error, message: response.data.message, data: response.data.data };
+        } catch (error: any) {
+            console.error('Error uploading image:', error?.response?.data);
             console.error("Request that caused the error: ", error?.request);
             return { error: error?.response?.data, request: error?.request, status: error.response ? error.response.status : null }; // Ném lỗi để xử lý bên ngoài
-		}   
-	}
+        }
+    }
 
-	// ROLE: any
-	async getAvatar (condition: FindingAvatarCriteria) {
-		try {
+    // ROLE: any
+    async getAvatar(condition: FindingAvatarCriteria) {
+        try {
             const response = await axios.get(`${this.baseUrl}/avatar/get?staffId=${condition.staffId}`, {
                 withCredentials: true,
                 responseType: 'arraybuffer',
             });
-    
+
             return response.data;
         } catch (error: any) {
             console.error("Error getting avatar: ", error);
             return error.response.data;
         }
-	}
+    }
 }
 
 export interface CreatingTransportPartnerStaffByAdminPayload {
@@ -951,7 +978,8 @@ export class TransportPartnerStaffOperation {
                 withCredentials: true,
             });
             console.log(response);
-            
+            console.log("ijjjjjjjj");
+
             return { error: response.data.error, data: response.data.data, message: response.data.message };
         } catch (error: any) {
             console.log("Error get authenticated staff information: ", error?.response?.data);
@@ -959,96 +987,96 @@ export class TransportPartnerStaffOperation {
             return { error: error?.response?.data, request: error?.request, status: error.response ? error.response.status : null };
         }
     }
-    
+
 
     async createByAdmin(payload: CreatingTransportPartnerStaffByAdminPayload) {
         try {
-			const response = await axios.post(`${this.baseUrl}/create`, payload, {
-				withCredentials: true,
-			});
+            const response = await axios.post(`${this.baseUrl}/create`, payload, {
+                withCredentials: true,
+            });
 
-			return { error: response.data.error, message: response.data.message, data: response.data.data };
-		}
-		catch (error: any) {
-			console.log("Error creating partner staff: ", error?.response?.data);
+            return { error: response.data.error, message: response.data.message, data: response.data.data };
+        }
+        catch (error: any) {
+            console.log("Error creating partner staff: ", error?.response?.data);
             console.error("Request that caused the error: ", error?.request);
             return { error: error?.response?.data, request: error?.request, status: error.response ? error.response.status : null };
-		}
+        }
     }
 
     async createByAgency(payload: CreatingTransportPartnerStaffByAgencyPayload) {
         try {
-			const response = await axios.post(`${this.baseUrl}/create`, payload, {
-				withCredentials: true,
-			});
+            const response = await axios.post(`${this.baseUrl}/create`, payload, {
+                withCredentials: true,
+            });
 
-			return { error: response.data.error, message: response.data.message, data: response.data.data };
-		}
-		catch (error: any) {
-			console.log("Error creating partner staff: ", error?.response?.data);
+            return { error: response.data.error, message: response.data.message, data: response.data.data };
+        }
+        catch (error: any) {
+            console.log("Error creating partner staff: ", error?.response?.data);
             console.error("Request that caused the error: ", error?.request);
             return { error: error?.response?.data, request: error?.request, status: error.response ? error.response.status : null };
-		}
+        }
     }
 
     async searchByAdmin(criteria: SearchingTransportPartnerStaffByAdminCriteria) {
         try {
-			const response = await axios.post(`${this.baseUrl}/search`, criteria, {
-				withCredentials: true,
-			});
+            const response = await axios.post(`${this.baseUrl}/search`, criteria, {
+                withCredentials: true,
+            });
 
-			return { error: response.data.error, message: response.data.message, data: response.data.data };
-		}
-		catch (error: any) {
-			console.log("Error searching partner staff: ", error?.response?.data);
+            return { error: response.data.error, message: response.data.message, data: response.data.data };
+        }
+        catch (error: any) {
+            console.log("Error searching partner staff: ", error?.response?.data);
             console.error("Request that caused the error: ", error?.request);
             return { error: error?.response?.data, request: error?.request, status: error.response ? error.response.status : null };
-		}
+        }
     }
 
     async searchByAgency(criteria: SearchingTransportPartnerStaffByAgencyCriteria) {
         try {
-			const response = await axios.post(`${this.baseUrl}/search`, criteria, {
-				withCredentials: true,
-			});
+            const response = await axios.post(`${this.baseUrl}/search`, criteria, {
+                withCredentials: true,
+            });
 
-			return { error: response.data.error, message: response.data.message, data: response.data.data };
-		}
-		catch (error: any) {
-			console.log("Error searching partner staff: ", error?.response?.data);
+            return { error: response.data.error, message: response.data.message, data: response.data.data };
+        }
+        catch (error: any) {
+            console.log("Error searching partner staff: ", error?.response?.data);
             console.error("Request that caused the error: ", error?.request);
             return { error: error?.response?.data, request: error?.request, status: error.response ? error.response.status : null };
-		}
+        }
     }
 
     async update(params: UpdatingTransportPartnerStaffParams, payload: UpdatingTransportPartnerStaffPayload) {
         try {
-			const response = await axios.put(`${this.baseUrl}/update?staffId=${params.staffId}`, payload, {
-				withCredentials: true,
-			});
+            const response = await axios.put(`${this.baseUrl}/update?staffId=${params.staffId}`, payload, {
+                withCredentials: true,
+            });
 
-			return { error: response.data.error, message: response.data.message, data: response.data.data };
-		}
-		catch (error: any) {
-			console.log("Error updating partner staff: ", error?.response?.data);
+            return { error: response.data.error, message: response.data.message, data: response.data.data };
+        }
+        catch (error: any) {
+            console.log("Error updating partner staff: ", error?.response?.data);
             console.error("Request that caused the error: ", error?.request);
             return { error: error?.response?.data, request: error?.request, status: error.response ? error.response.status : null };
-		}
+        }
     }
 
     async deleteStaff(params: DeletingTransportPartnerStaffParams) {
         try {
-			const response = await axios.delete(`${this.baseUrl}/delete?staffId=${params.staffId}`, {
-				withCredentials: true,
-			});
+            const response = await axios.delete(`${this.baseUrl}/delete?staffId=${params.staffId}`, {
+                withCredentials: true,
+            });
 
-			return { error: response.data.error, message: response.data.message, data: response.data.data };
-		}
-		catch (error: any) {
-			console.log("Error deleting partner staff: ", error?.response?.data);
+            return { error: response.data.error, message: response.data.message, data: response.data.data };
+        }
+        catch (error: any) {
+            console.log("Error deleting partner staff: ", error?.response?.data);
             console.error("Request that caused the error: ", error?.request);
             return { error: error?.response?.data, request: error?.request, status: error.response ? error.response.status : null };
-		}
+        }
     }
 }
 
@@ -1173,92 +1201,92 @@ export class TransportPartnerOperation {
 
     async createByAdmin(payload: CreatingTransportPartnerByAdminPayload) {
         try {
-			const response = await axios.post(`${this.baseUrl}/create`, payload, {
-				withCredentials: true,
-			});
+            const response = await axios.post(`${this.baseUrl}/create`, payload, {
+                withCredentials: true,
+            });
 
-			return { error: response.data.error, message: response.data.message, data: response.data.data };
-		}
-		catch (error: any) {
-			console.log("Error creating transport partner: ", error?.response?.data);
+            return { error: response.data.error, message: response.data.message, data: response.data.data };
+        }
+        catch (error: any) {
+            console.log("Error creating transport partner: ", error?.response?.data);
             console.error("Request that caused the error: ", error?.request);
             return { error: error?.response?.data, request: error?.request, status: error.response ? error.response.status : null };
-		}
+        }
     }
 
     async createByAgency(payload: CreatingTransportPartnerByAgencyPayload) {
         try {
-			const response = await axios.post(`${this.baseUrl}/create`, payload, {
-				withCredentials: true,
-			});
+            const response = await axios.post(`${this.baseUrl}/create`, payload, {
+                withCredentials: true,
+            });
 
-			return { error: response.data.error, message: response.data.message, data: response.data.data };
-		}
-		catch (error: any) {
-			console.log("Error creating transport partner: ", error?.response?.data);
+            return { error: response.data.error, message: response.data.message, data: response.data.data };
+        }
+        catch (error: any) {
+            console.log("Error creating transport partner: ", error?.response?.data);
             console.error("Request that caused the error: ", error?.request);
             return { error: error?.response?.data, request: error?.request, status: error.response ? error.response.status : null };
-		}
+        }
     }
 
     async searchByAdmin(criteria: SearchingTransportPartnerByAdminCriteria) {
         try {
-			const response = await axios.post(`${this.baseUrl}/search`, criteria, {
-				withCredentials: true,
-			});
+            const response = await axios.post(`${this.baseUrl}/search`, criteria, {
+                withCredentials: true,
+            });
 
-			return { error: response.data.error, message: response.data.message, data: response.data.data };
-		}
-		catch (error: any) {
-			console.log("Error searching transport partner: ", error?.response?.data);
+            return { error: response.data.error, message: response.data.message, data: response.data.data };
+        }
+        catch (error: any) {
+            console.log("Error searching transport partner: ", error?.response?.data);
             console.error("Request that caused the error: ", error?.request);
             return { error: error?.response?.data, request: error?.request, status: error.response ? error.response.status : null };
-		}
+        }
     }
 
     async searchByAgency(criteria: SearchingTransportPartnerByAgencyCriteria) {
         try {
-			const response = await axios.post(`${this.baseUrl}/search`, criteria, {
-				withCredentials: true,
-			});
+            const response = await axios.post(`${this.baseUrl}/search`, criteria, {
+                withCredentials: true,
+            });
 
-			return { error: response.data.error, message: response.data.message, data: response.data.data };
-		}
-		catch (error: any) {
-			console.log("Error searching transport partner: ", error?.response?.data);
+            return { error: response.data.error, message: response.data.message, data: response.data.data };
+        }
+        catch (error: any) {
+            console.log("Error searching transport partner: ", error?.response?.data);
             console.error("Request that caused the error: ", error?.request);
             return { error: error?.response?.data, request: error?.request, status: error.response ? error.response.status : null };
-		}
+        }
     }
 
     async update(params: UpdatingTransportPartnerParams, payload: UpdatingTransportPartnerPayload) {
         try {
-			const response = await axios.put(`${this.baseUrl}/update?transportPartnerId=${params.transportPartnerId}`, payload, {
-				withCredentials: true,
-			});
+            const response = await axios.put(`${this.baseUrl}/update?transportPartnerId=${params.transportPartnerId}`, payload, {
+                withCredentials: true,
+            });
 
-			return { error: response.data.error, message: response.data.message, data: response.data.data };
-		}
-		catch (error: any) {
-			console.log("Error updating transport partner: ", error?.response?.data);
+            return { error: response.data.error, message: response.data.message, data: response.data.data };
+        }
+        catch (error: any) {
+            console.log("Error updating transport partner: ", error?.response?.data);
             console.error("Request that caused the error: ", error?.request);
             return { error: error?.response?.data, request: error?.request, status: error.response ? error.response.status : null };
-		}
+        }
     }
 
     async deleteTransportPartner(params: DeletingTransportPartnerParams) {
         try {
-			const response = await axios.delete(`${this.baseUrl}/delete?transportPartnerId=${params.transportPartnerId}`, {
-				withCredentials: true,
-			});
+            const response = await axios.delete(`${this.baseUrl}/delete?transportPartnerId=${params.transportPartnerId}`, {
+                withCredentials: true,
+            });
 
-			return { error: response.data.error, message: response.data.message, data: response.data.data };
-		}
-		catch (error: any) {
-			console.log("Error deleting transport partner: ", error?.response?.data);
+            return { error: response.data.error, message: response.data.message, data: response.data.data };
+        }
+        catch (error: any) {
+            console.log("Error deleting transport partner: ", error?.response?.data);
             console.error("Request that caused the error: ", error?.request);
             return { error: error?.response?.data, request: error?.request, status: error.response ? error.response.status : null };
-		}
+        }
     }
 }
 
@@ -1324,137 +1352,137 @@ export class VehicleOperation {
 
     async createByAdmin(payload: CreatingVehicleByAdminPayload) {
         try {
-			const response = await axios.post(`${this.baseUrl}/create`, payload, {
-				withCredentials: true,
-			});
+            const response = await axios.post(`${this.baseUrl}/create`, payload, {
+                withCredentials: true,
+            });
 
-			return { error: response.data.error, message: response.data.message, data: response.data.data };
-		}
-		catch (error: any) {
-			console.log("Error creating vehicle: ", error?.response?.data);
+            return { error: response.data.error, message: response.data.message, data: response.data.data };
+        }
+        catch (error: any) {
+            console.log("Error creating vehicle: ", error?.response?.data);
             console.error("Request that caused the error: ", error?.request);
             return { error: error?.response?.data, request: error?.request, status: error.response ? error.response.status : null };
-		}
+        }
     }
 
     async createByAgency(payload: CreatingVehicleByAgencyPayload) {
         try {
-			const response = await axios.post(`${this.baseUrl}/create`, payload, {
-				withCredentials: true,
-			});
+            const response = await axios.post(`${this.baseUrl}/create`, payload, {
+                withCredentials: true,
+            });
 
-			return { error: response.data.error, message: response.data.message, data: response.data.data };
-		}
-		catch (error: any) {
-			console.log("Error creating vehicle: ", error?.response?.data);
+            return { error: response.data.error, message: response.data.message, data: response.data.data };
+        }
+        catch (error: any) {
+            console.log("Error creating vehicle: ", error?.response?.data);
             console.error("Request that caused the error: ", error?.request);
             return { error: error?.response?.data, request: error?.request, status: error.response ? error.response.status : null };
-		}
+        }
     }
 
     async searchByAdmin(criteria: SearchingVehicleByAdminCriteria) {
         try {
-			const response = await axios.post(`${this.baseUrl}/search`, criteria, {
-				withCredentials: true,
-			});
+            const response = await axios.post(`${this.baseUrl}/search`, criteria, {
+                withCredentials: true,
+            });
 
-			return { error: response.data.error, message: response.data.message, data: response.data.data };
-		}
-		catch (error: any) {
-			console.log("Error searching vehicle: ", error?.response?.data);
+            return { error: response.data.error, message: response.data.message, data: response.data.data };
+        }
+        catch (error: any) {
+            console.log("Error searching vehicle: ", error?.response?.data);
             console.error("Request that caused the error: ", error?.request);
             return { error: error?.response?.data, request: error?.request, status: error.response ? error.response.status : null };
-		}
+        }
     }
 
     async searchByAgency(criteria: SearchingVehicleByAgencyCriteria) {
         try {
-			const response = await axios.post(`${this.baseUrl}/search`, criteria, {
-				withCredentials: true,
-			});
+            const response = await axios.post(`${this.baseUrl}/search`, criteria, {
+                withCredentials: true,
+            });
 
-			return { error: response.data.error, message: response.data.message, data: response.data.data };
-		}
-		catch (error: any) {
-			console.log("Error searching vehicle: ", error?.response?.data);
+            return { error: response.data.error, message: response.data.message, data: response.data.data };
+        }
+        catch (error: any) {
+            console.log("Error searching vehicle: ", error?.response?.data);
             console.error("Request that caused the error: ", error?.request);
             return { error: error?.response?.data, request: error?.request, status: error.response ? error.response.status : null };
-		}
+        }
     }
 
     async update(params: UpdatingVehicleParams, payload: UpdatingVehiclePayload) {
         try {
-			const response = await axios.post(`${this.baseUrl}/update?vehicleId=${params.vehicleId}`, payload, {
-				withCredentials: true,
-			});
+            const response = await axios.post(`${this.baseUrl}/update?vehicleId=${params.vehicleId}`, payload, {
+                withCredentials: true,
+            });
 
-			return { error: response.data.error, message: response.data.message, data: response.data.data };
-		}
-		catch (error: any) {
-			console.log("Error updating vehicle: ", error?.response?.data);
+            return { error: response.data.error, message: response.data.message, data: response.data.data };
+        }
+        catch (error: any) {
+            console.log("Error updating vehicle: ", error?.response?.data);
             console.error("Request that caused the error: ", error?.request);
             return { error: error?.response?.data, request: error?.request, status: error.response ? error.response.status : null };
-		}
+        }
     }
 
     async deleteVehicle(params: DeletingVehicleParams) {
         try {
-			const response = await axios.delete(`${this.baseUrl}/delete?vehicleId=${params.vehicleId}`, {
-				withCredentials: true,
-			});
+            const response = await axios.delete(`${this.baseUrl}/delete?vehicleId=${params.vehicleId}`, {
+                withCredentials: true,
+            });
 
-			return { error: response.data.error, message: response.data.message, data: response.data.data };
-		}
-		catch (error: any) {
-			console.log("Error deleting vehicle: ", error?.response?.data);
+            return { error: response.data.error, message: response.data.message, data: response.data.data };
+        }
+        catch (error: any) {
+            console.log("Error deleting vehicle: ", error?.response?.data);
             console.error("Request that caused the error: ", error?.request);
             return { error: error?.response?.data, request: error?.request, status: error.response ? error.response.status : null };
-		}
+        }
     }
 
     async addShipments(vehicleId: string, payload: ShipmentIds) {
         try {
-			const response = await axios.post(`${this.baseUrl}/shipments/add?vehicleId=${vehicleId}`, payload, {
-				withCredentials: true,
-			});
+            const response = await axios.post(`${this.baseUrl}/shipments/add?vehicleId=${vehicleId}`, payload, {
+                withCredentials: true,
+            });
 
-			return { error: response.data.error, message: response.data.message, data: response.data.data };
-		}
-		catch (error: any) {
-			console.log("Error adding shipments to vehicle: ", error?.response?.data);
+            return { error: response.data.error, message: response.data.message, data: response.data.data };
+        }
+        catch (error: any) {
+            console.log("Error adding shipments to vehicle: ", error?.response?.data);
             console.error("Request that caused the error: ", error?.request);
             return { error: error?.response?.data, request: error?.request, status: error.response ? error.response.status : null };
-		}
+        }
     }
 
     async removeShipments(vehicleId: string, payload: ShipmentIds) {
         try {
-			const response = await axios.post(`${this.baseUrl}/shipments/delete?vehicleId=${vehicleId}`, payload, {
-				withCredentials: true,
-			});
+            const response = await axios.post(`${this.baseUrl}/shipments/delete?vehicleId=${vehicleId}`, payload, {
+                withCredentials: true,
+            });
 
-			return { error: response.data.error, message: response.data.message, data: response.data.data };
-		}
-		catch (error: any) {
-			console.log("Error removing shipments from vehicle: ", error?.response?.data);
+            return { error: response.data.error, message: response.data.message, data: response.data.data };
+        }
+        catch (error: any) {
+            console.log("Error removing shipments from vehicle: ", error?.response?.data);
             console.error("Request that caused the error: ", error?.request);
             return { error: error?.response?.data, request: error?.request, status: error.response ? error.response.status : null };
-		}
+        }
     }
 
     async undertakeShiment(shipmentId: string) {
         try {
-			const response = await axios.get(`${this.baseUrl}/shipments/undertake?shipmentId=${shipmentId}`, {
-				withCredentials: true,
-			});
+            const response = await axios.get(`${this.baseUrl}/shipments/undertake?shipmentId=${shipmentId}`, {
+                withCredentials: true,
+            });
 
-			return { error: response.data.error, message: response.data.message, data: response.data.data };
-		}
-		catch (error: any) {
-			console.log("Error undertaking shipment: ", error?.response?.data);
+            return { error: response.data.error, message: response.data.message, data: response.data.data };
+        }
+        catch (error: any) {
+            console.log("Error undertaking shipment: ", error?.response?.data);
             console.error("Request that caused the error: ", error?.request);
             return { error: error?.response?.data, request: error?.request, status: error.response ? error.response.status : null };
-		}
+        }
     }
 }
 
@@ -1546,62 +1574,62 @@ export class AgencyOperation {
 
     async create(payload: CreatingAgencyPayload) {
         try {
-			const response = await axios.post(`${this.baseUrl}/create`, payload, {
-				withCredentials: true,
-			});
+            const response = await axios.post(`${this.baseUrl}/create`, payload, {
+                withCredentials: true,
+            });
 
-			return { error: response.data.error, message: response.data.message, data: response.data.data };
-		}
-		catch (error: any) {
-			console.log("Error creating agency: ", error?.response?.data);
+            return { error: response.data.error, message: response.data.message, data: response.data.data };
+        }
+        catch (error: any) {
+            console.log("Error creating agency: ", error?.response?.data);
             console.error("Request that caused the error: ", error?.request);
             return { error: error?.response?.data, request: error?.request, status: error.response ? error.response.status : null };
-		}
+        }
     }
 
     async search(criteria: SearchingAgencyCriteria) {
         try {
-			const response = await axios.post(`${this.baseUrl}/search`, criteria, {
-				withCredentials: true,
-			});
+            const response = await axios.post(`${this.baseUrl}/search`, criteria, {
+                withCredentials: true,
+            });
 
-			return { error: response.data.error, message: response.data.message, data: response.data.data };
-		}
-		catch (error: any) {
-			console.log("Error searching agency: ", error?.response?.data);
+            return { error: response.data.error, message: response.data.message, data: response.data.data };
+        }
+        catch (error: any) {
+            console.log("Error searching agency: ", error?.response?.data);
             console.error("Request that caused the error: ", error?.request);
             return { error: error?.response?.data, request: error?.request, status: error.response ? error.response.status : null };
-		}
+        }
     }
 
     async update(agencyId: string, payload: UpdatingAgencyPayload) {
         try {
-			const response = await axios.put(`${this.baseUrl}/update?agencyId=${agencyId}`, payload, {
-				withCredentials: true,
-			});
+            const response = await axios.put(`${this.baseUrl}/update?agencyId=${agencyId}`, payload, {
+                withCredentials: true,
+            });
 
-			return { error: response.data.error, message: response.data.message, data: response.data.data };
-		}
-		catch (error: any) {
-			console.log("Error updating agency: ", error?.response?.data);
+            return { error: response.data.error, message: response.data.message, data: response.data.data };
+        }
+        catch (error: any) {
+            console.log("Error updating agency: ", error?.response?.data);
             console.error("Request that caused the error: ", error?.request);
             return { error: error?.response?.data, request: error?.request, status: error.response ? error.response.status : null };
-		}
+        }
     }
 
     async deleteAgency(agencyId: string) {
         try {
-			const response = await axios.delete(`${this.baseUrl}/delete?agencyId=${agencyId}`, {
-				withCredentials: true,
-			});
+            const response = await axios.delete(`${this.baseUrl}/delete?agencyId=${agencyId}`, {
+                withCredentials: true,
+            });
 
-			return { error: response.data.error, message: response.data.message, data: response.data.data };
-		}
-		catch (error: any) {
-			console.log("Error deleting agency: ", error?.response?.data);
+            return { error: response.data.error, message: response.data.message, data: response.data.data };
+        }
+        catch (error: any) {
+            console.log("Error deleting agency: ", error?.response?.data);
             console.error("Request that caused the error: ", error?.request);
             return { error: error?.response?.data, request: error?.request, status: error.response ? error.response.status : null };
-		}
+        }
     }
 }
 
@@ -1635,213 +1663,213 @@ export interface UndertakingShipmentInfo {
 
 export class ShipmentsOperation {
     private baseUrl: string;
-	constructor() {
-		this.baseUrl = "https://api2.tdlogistics.net.vn/v2/shipments";
-	}
+    constructor() {
+        this.baseUrl = "https://api2.tdlogistics.net.vn/v2/shipments";
+    }
 
     async check(condition: ShipmentID) {
         try {
-			const response = await axios.get(`${this.baseUrl}/check?shipmentId=${condition.shipmentId}`, {
-				withCredentials: true,
-			});
+            const response = await axios.get(`${this.baseUrl}/check?shipmentId=${condition.shipmentId}`, {
+                withCredentials: true,
+            });
 
-			const data = response.data;
-			return { error: data.error, existed: data.existed, message: data.message };
-		} catch (error: any) {
-			console.log("Error checking exist shipment: ", error?.response?.data);
+            const data = response.data;
+            return { error: data.error, existed: data.existed, message: data.message };
+        } catch (error: any) {
+            console.log("Error checking exist shipment: ", error?.response?.data);
             console.error("Request that caused the error: ", error?.request);
             return { error: error?.response?.data, request: error?.request, status: error.response ? error.response.status : null };
-		}
+        }
     }
 
     // async getAllAgencies() {
     //     try {
-	// 		const response = await axios.get(`${this.baseUrl}/get_agencies`, {
-	// 			withCredentials: true,
-	// 		});
+    // 		const response = await axios.get(`${this.baseUrl}/get_agencies`, {
+    // 			withCredentials: true,
+    // 		});
 
-	// 		const data = response.data;
-	// 		return { error: data.error, data: data.data, message: data.message };
-	// 	} catch (error: any) {
-	// 		console.log("Error getting all agencies: ", error?.response?.data);
+    // 		const data = response.data;
+    // 		return { error: data.error, data: data.data, message: data.message };
+    // 	} catch (error: any) {
+    // 		console.log("Error getting all agencies: ", error?.response?.data);
     //         console.error("Request that caused the error: ", error?.request);
     //         return { error: error?.response?.data, request: error?.request, status: error.response ? error.response.status : null };
-	// 	}
+    // 	}
     // }
 
     // ROLE: ADMIN, MANAGER, TELLER, AGENCY_MANAGER, AGENCY_TELLER
-	async create(info: CreatingShipmentInfo) {
-		try {
-			const response = await axios.post(`${this.baseUrl}/create`, info, {
-				withCredentials: true,
-			});
+    async create(info: CreatingShipmentInfo) {
+        try {
+            const response = await axios.post(`${this.baseUrl}/create`, info, {
+                withCredentials: true,
+            });
 
-			const data = response.data;
-			return { error: data.error, message: data.message };
-		} catch (error: any) {
-			console.log("Error creating shipment: ", error?.response?.data);
+            const data = response.data;
+            return { error: data.error, message: data.message };
+        } catch (error: any) {
+            console.log("Error creating shipment: ", error?.response?.data);
             console.error("Request that caused the error: ", error?.request);
             return { error: error?.response?.data, request: error?.request, status: error.response ? error.response.status : null };
-		}
-	}
+        }
+    }
 
     async getOrdersFromShipment(condition: ShipmentID) {
         try {
-			const response = await axios.get(`${this.baseUrl}/get_orders?shipmentId=${condition.shipmentId}`, {
-				withCredentials: true,
-			});
+            const response = await axios.get(`${this.baseUrl}/get_orders?shipmentId=${condition.shipmentId}`, {
+                withCredentials: true,
+            });
 
-			const data = response.data;
-			return { error: data.error, data: data.data, message: data.message };
-		} catch (error: any) {
-			console.log("Error getting orders from shipment: ", error?.response?.data);
+            const data = response.data;
+            return { error: data.error, data: data.data, message: data.message };
+        } catch (error: any) {
+            console.log("Error getting orders from shipment: ", error?.response?.data);
             console.error("Request that caused the error: ", error?.request);
             return { error: error?.response?.data, request: error?.request, status: error.response ? error.response.status : null };
-		}
+        }
     }
 
     // ROLE: ADMIN, MANAGER, TELLER, AGENCY_MANAGER, AGENCY_TELLER
     async addOrdersToShipment(condition: ShipmentID, info: OperatingWithOrderInfo) {
         try {
-			const response = await axios.post(`${this.baseUrl}/add_orders?shipmentId=${condition.shipmentId}`, info, {
-				withCredentials: true,
-			});
+            const response = await axios.post(`${this.baseUrl}/add_orders?shipmentId=${condition.shipmentId}`, info, {
+                withCredentials: true,
+            });
 
-			const data = response.data;
-			return { error: data.error, message: data.message };
-		} catch (error: any) {
-			console.log("Error adding orders to shipment: ", error?.response?.data);
+            const data = response.data;
+            return { error: data.error, message: data.message };
+        } catch (error: any) {
+            console.log("Error adding orders to shipment: ", error?.response?.data);
             console.error("Request that caused the error: ", error?.request);
             return { error: error?.response?.data, request: error?.request, status: error.response ? error.response.status : null };
-		}
+        }
     }
 
     // ROLE: ADMIN, MANAGER, TELLER, AGENCY_MANAGER, AGENCY_TELLER
     async deleteOrderFromShipment(condition: ShipmentID, info: OperatingWithOrderInfo) {
         try {
-			const response = await axios.post(`${this.baseUrl}/remove_orders?shipmentId=${condition.shipmentId}`, info, {
-				withCredentials: true,
-			});
+            const response = await axios.post(`${this.baseUrl}/remove_orders?shipmentId=${condition.shipmentId}`, info, {
+                withCredentials: true,
+            });
 
-			const data = response.data;
-			return { error: data.error, message: data.message };
-		} catch (error: any) {
-			console.log("Error deleting order from shipment: ", error?.response?.data);
+            const data = response.data;
+            return { error: data.error, message: data.message };
+        } catch (error: any) {
+            console.log("Error deleting order from shipment: ", error?.response?.data);
             console.error("Request that caused the error: ", error?.request);
             return { error: error?.response?.data, request: error?.request, status: error.response ? error.response.status : null };
-		}
+        }
     }
 
     // ROLE: AGENCY_MANAGER, AGENCY_TELLER
     async confirmCreate(condition: ShipmentID) {
         try {
-			const response = await axios.post(`${this.baseUrl}/confirm_create`, condition, {
-				withCredentials: true,
-			});
+            const response = await axios.post(`${this.baseUrl}/confirm_create`, condition, {
+                withCredentials: true,
+            });
 
-			const data = response.data;
-			return { error: data.error, message: data.message };
-		} catch (error: any) {
-			console.log("Error confirming creat shipment: ", error?.response?.data);
+            const data = response.data;
+            return { error: data.error, message: data.message };
+        } catch (error: any) {
+            console.log("Error confirming creat shipment: ", error?.response?.data);
             console.error("Request that caused the error: ", error?.request);
             return { error: error?.response?.data, request: error?.request, status: error.response ? error.response.status : null };
-		}  
+        }
     }
 
     // ROLE: ADMIN, MANAGER, TELLER, AGENCY_MANAGER, AGENCY_TELLER
     async get(condition: FindingShipmentConditions) {
         try {
-			const response = await axios.post(`${this.baseUrl}/get`, condition, {
-				withCredentials: true,
-			});
+            const response = await axios.post(`${this.baseUrl}/get`, condition, {
+                withCredentials: true,
+            });
 
-			const data = response.data;
-			return { error: data.error, data: data.data, message: data.message };
-		} catch (error: any) {
-			console.log("Error getting shipments: ", error?.response?.data);
+            const data = response.data;
+            return { error: data.error, data: data.data, message: data.message };
+        } catch (error: any) {
+            console.log("Error getting shipments: ", error?.response?.data);
             console.error("Request that caused the error: ", error?.request);
             return { error: error?.response?.data, request: error?.request, status: error.response ? error.response.status : null };
-		} 
+        }
     }
 
     // ROLE: ADMIN, MANAGER, TELLER, AGENCY_MANAGER, AGENCY_TELLER
     async delete(condition: ShipmentID) {
         try {
-			const response = await axios.delete(`${this.baseUrl}/delete?shipmentId=${condition.shipmentId}`,{
-				withCredentials: true,
-			});
+            const response = await axios.delete(`${this.baseUrl}/delete?shipmentId=${condition.shipmentId}`, {
+                withCredentials: true,
+            });
 
-			const data = response.data;
-			return { error: data.error, message: data.message };
-		} catch (error: any) {
-			console.log("Error deleting shipment: ", error?.response?.data);
+            const data = response.data;
+            return { error: data.error, message: data.message };
+        } catch (error: any) {
+            console.log("Error deleting shipment: ", error?.response?.data);
             console.error("Request that caused the error: ", error?.request);
             return { error: error?.response?.data, request: error?.request, status: error.response ? error.response.status : null };
-		} 
+        }
     }
 
     // ROLE: ADMIN, MANAGER, TELLER, AGENCY_MANAGER, AGENCY_TELLER
     async decompose(condition: ShipmentID, info: DecomposingShipmentInfo) {
         try {
-			const response = await axios.post(`${this.baseUrl}/decompose?shipmentId=${condition.shipmentId}`, info, {
-				withCredentials: true,
-			});
+            const response = await axios.post(`${this.baseUrl}/decompose?shipmentId=${condition.shipmentId}`, info, {
+                withCredentials: true,
+            });
 
-			const data = response.data;
-			return { error: data.error, message: data.message };
-		} catch (error: any) {
-			console.log("Error decomposing shipment: ", error?.response?.data);
+            const data = response.data;
+            return { error: data.error, message: data.message };
+        } catch (error: any) {
+            console.log("Error decomposing shipment: ", error?.response?.data);
             console.error("Request that caused the error: ", error?.request);
             return { error: error?.response?.data, request: error?.request, status: error.response ? error.response.status : null };
-		} 
+        }
     }
 
     // ROLE: AGENCY_MANAGER, AGENCY_TELLER
     async receive(condition: ShipmentID) {
         try {
-			const response = await axios.post(`${this.baseUrl}/receive`, condition, {
-				withCredentials: true,
-			});
+            const response = await axios.post(`${this.baseUrl}/receive`, condition, {
+                withCredentials: true,
+            });
 
-			const data = response.data;
-			return { error: data.error, message: data.message };
-		} catch (error: any) {
-			console.log("Error receiving shipment: ", error?.response?.data);
+            const data = response.data;
+            return { error: data.error, message: data.message };
+        } catch (error: any) {
+            console.log("Error receiving shipment: ", error?.response?.data);
             console.error("Request that caused the error: ", error?.request);
             return { error: error?.response?.data, request: error?.request, status: error.response ? error.response.status : null };
-		} 
+        }
     }
-    
+
     // ROLE: SHIPPER, AGENCY_SHIPPER, PARTNER_SHIPPER
     async undertake(info: UndertakingShipmentInfo) {
         try {
-			const response = await axios.post(`${this.baseUrl}/undertake`, info, {
-				withCredentials: true,
-			});
+            const response = await axios.post(`${this.baseUrl}/undertake`, info, {
+                withCredentials: true,
+            });
 
-			const data = response.data;
-			return { error: data.error, message: data.message };
-		} catch (error: any) {
-			console.log("Error undertaking shipment: ", error?.response?.data);
+            const data = response.data;
+            return { error: data.error, message: data.message };
+        } catch (error: any) {
+            console.log("Error undertaking shipment: ", error?.response?.data);
             console.error("Request that caused the error: ", error?.request);
             return { error: error?.response?.data, request: error?.request, status: error.response ? error.response.status : null };
-		}
+        }
     }
 
     // ROLE: ADMIN, MANAGER, TELLER
     async approve(condition: ShipmentID) {
         try {
-			const response = await axios.put(`${this.baseUrl}/accept?shipmentId=${condition.shipmentId}`, null, {
-				withCredentials: true,
-			});
+            const response = await axios.put(`${this.baseUrl}/accept?shipmentId=${condition.shipmentId}`, null, {
+                withCredentials: true,
+            });
 
-			const data = response.data;
-			return { error: data.error, message: data.message };
-		} catch (error: any) {
-			console.log("Error approve shipment: ", error?.response?.data);
+            const data = response.data;
+            return { error: data.error, message: data.message };
+        } catch (error: any) {
+            console.log("Error approve shipment: ", error?.response?.data);
             console.error("Request that caused the error: ", error?.request);
             return { error: error?.response?.data, request: error?.request, status: error.response ? error.response.status : null };
-		}
+        }
     }
 }
 
@@ -1854,15 +1882,15 @@ export interface CreatingNewShipperTasksInfo {
 
 export interface GettingTasksCondition {
     staffId?: string,
-	option?: number,
+    option?: number,
 }
 
 export interface ConfirmingCompletedTaskInfo {
-	id: number,
+    id: number,
 }
 
 export interface GettingHistoryInfo {
-	option?: number,
+    option?: number,
 }
 
 export interface DeletingShipperTasksCondition {
@@ -1870,10 +1898,10 @@ export interface DeletingShipperTasksCondition {
 }
 
 export class ShippersOperation {
-	private baseUrl: string;
-	constructor() {
-		this.baseUrl = "https://api2.tdlogistics.net.vn/v2/tasks/shippers";
-	}
+    private baseUrl: string;
+    constructor() {
+        this.baseUrl = "https://api2.tdlogistics.net.vn/v2/tasks/shippers";
+    }
 
     // ROLE: AGENCY_MANAGER, AGENCY_HUMAN_RESOURCE_MANAGER
     async getObjectsCanHandleTask() {
@@ -1908,70 +1936,68 @@ export class ShippersOperation {
     }
 
     // ROLE: AGENCY_MANAGER, AGENCY_HUMAN_RESOURCE_MANAGER, AGENCY_SHIPPER
-	async getTask(condition: GettingTasksCondition) {
-		try {
-			const response: AxiosResponse = await axios.post(`${this.baseUrl}/get`, condition, {
-				withCredentials: true,
-			});
+    async getTask(condition: GettingTasksCondition) {
+        try {
+            const response: AxiosResponse = await axios.post(`${this.baseUrl}/get`, condition, {
+                withCredentials: true,
+            });
 
-			const data = response.data;
-			return { error: data.error, data: data.data, message: data.message };
-		} catch (error: any) {
-			console.log("Error getting tasks: ", error?.response?.data);
+            const data = response.data;
+            console.log(data);
+            return { error: data.error, data: data.data, message: data.message };
+        } catch (error: any) {
+            console.log("Error getting tasks: ", error?.response?.data);
             console.error("Request that caused the error: ", error?.request);
             return { error: error?.response?.data, request: error?.request, status: error.response ? error.response.status : null };
-		}
-	}
+        }
+    }
 
     // ROLE: AGENCY_SHIPPER
-	async confirmCompletedTask(condition: ConfirmingCompletedTaskInfo) {
-		try {
-			const response: AxiosResponse = await axios.patch(`${this.baseUrl}/complete?id=${condition.id}`, null, {
-				withCredentials: true,
-			});
+    async confirmCompletedTask(condition: ConfirmingCompletedTaskInfo) {
+        try {
+            const response: AxiosResponse = await axios.patch(`${this.baseUrl}/complete?id=${condition.id}`, null, {
+                withCredentials: true,
+            });
 
-			const data = response.data;
-			return { error: data.error, message: data.message };
-		} catch (error: any) {
-			console.log("Error confirming completed task: ", error?.response?.data);
+            const data = response.data;
+            return { error: data.error, message: data.message };
+        } catch (error: any) {
+            console.log("Error confirming completed task: ", error?.response?.data);
             console.error("Request that caused the error: ", error?.request);
             return { error: error?.response?.data, request: error?.request, status: error.response ? error.response.status : null };
-		}
-	}
+        }
+    }
 
     // ROLE: AGENCY_MANAGER, AGENCY_HUMAN_RESOURCE_MANAGER, AGENCY_SHIPPER 
-	async getHistory(condition: GettingHistoryInfo) {
-		try {
-			const response: AxiosResponse = await axios.post(`${this.baseUrl}/history/get`, condition, {
-				withCredentials: true,
-			});
+    async getHistory(condition: GettingHistoryInfo) {
+        try {
+            const response: AxiosResponse = await axios.post(`${this.baseUrl}/history/get`, condition, {
+                withCredentials: true,
+            });
 
-			const data = response.data;
-            
-            console.log("get history");
-            console.log(response);
-			return { error: data.error, data: data.data, message: data.message };
-		} catch (error: any) {
-			console.log("Error getting history: ", error?.response?.data);
+            const data = response.data;
+            return { error: data.error, data: data.data, message: data.message };
+        } catch (error: any) {
+            console.log("Error getting history: ", error?.response?.data);
             console.error("Request that caused the error: ", error?.request);
             return { error: error?.response?.data, request: error?.request, status: error.response ? error.response.status : null };
-		}
-	}
+        }
+    }
 
     // ROLE: AGENCY_MANAGER, AGENCY_HUMAN_RESOURCE_MANAGER
     async deleteTask(condition: DeletingShipperTasksCondition) {
         try {
-			const response: AxiosResponse = await axios.post(`${this.baseUrl}/delete`, condition, {
-				withCredentials: true,
-			});
+            const response: AxiosResponse = await axios.post(`${this.baseUrl}/delete`, condition, {
+                withCredentials: true,
+            });
 
-			const data = response.data;
-			return { error: data.error, message: data.message };
-		} catch (error: any) {
-			console.log("Error deleting task: ", error?.response?.data);
+            const data = response.data;
+            return { error: data.error, message: data.message };
+        } catch (error: any) {
+            console.log("Error deleting task: ", error?.response?.data);
             console.error("Request that caused the error: ", error?.request);
             return { error: error?.response?.data, request: error?.request, status: error.response ? error.response.status : null };
-		}
+        }
     }
 }
 
@@ -1983,11 +2009,11 @@ export interface CreatingNewDriverTasksInfo {
 
 export interface GettingTasksCondition {
     staffId?: string,
-	option?: number,
+    option?: number,
 }
 
 export interface ConfirmingCompletedTaskCondition {
-	id: number,
+    id: number,
 }
 
 export interface DeletingDriverTaskCondition {
@@ -1995,15 +2021,15 @@ export interface DeletingDriverTaskCondition {
 }
 
 export interface GettingHistoryInfo {
-	option?: number,
+    option?: number,
 }
 
 
 export class DriversOperation {
     private baseUrl: string;
-	constructor() {
-		this.baseUrl = "https://api2.tdlogistics.net.vn/v2/tasks/drivers";
-	}
+    constructor() {
+        this.baseUrl = "https://api2.tdlogistics.net.vn/v2/tasks/drivers";
+    }
 
     // ROLE: ADMIN, MANAGER, HUMAN_RESOURCE_MANAGER, AGENCY_MANAGER, AGENCY_HUMAN_RESOURCE_MANAGER
     async getObjectsCanHandleTask() {
@@ -2038,50 +2064,50 @@ export class DriversOperation {
     }
 
     // ROLE: ADMIN, MANAGER, HUMAN_RESOURCE_MANAGER, AGENCY_MANAGER, AGENCY_HUMAN_RESOURCE_MANAGER, PARTNER_DRIVER
-	async getTask(condition: GettingTasksCondition) {
-		try {
-			const response: AxiosResponse = await axios.post(`${this.baseUrl}/get`, condition, {
-				withCredentials: true,
-			});
+    async getTask(condition: GettingTasksCondition) {
+        try {
+            const response: AxiosResponse = await axios.post(`${this.baseUrl}/get`, condition, {
+                withCredentials: true,
+            });
 
-			const data = response.data;
-			return { error: data.error, data: data.data, message: data.message };
-		} catch (error: any) {
-			console.log("Error getting tasks: ", error?.response?.data);
+            const data = response.data;
+            return { error: data.error, data: data.data, message: data.message };
+        } catch (error: any) {
+            console.log("Error getting tasks: ", error?.response?.data);
             console.error("Request that caused the error: ", error?.request);
             return { error: error?.response?.data, request: error?.request, status: error.response ? error.response.status : null };
-		}
-	}
+        }
+    }
 
     // ROLE: PARTNER_DRIVER
-	async confirmCompletedTask(condition: ConfirmingCompletedTaskCondition) {
-		try {
-			const response: AxiosResponse = await axios.delete(`${this.baseUrl}/complete?id=${condition.id}`, {
-				withCredentials: true,
-			});
+    async confirmCompletedTask(condition: ConfirmingCompletedTaskCondition) {
+        try {
+            const response: AxiosResponse = await axios.delete(`${this.baseUrl}/complete?id=${condition.id}`, {
+                withCredentials: true,
+            });
 
-			const data = response.data;
-			return { error: data.error, message: data.message };
-		} catch (error: any) {
-			console.log("Error confirming completed task: ", error?.response?.data);
+            const data = response.data;
+            return { error: data.error, message: data.message };
+        } catch (error: any) {
+            console.log("Error confirming completed task: ", error?.response?.data);
             console.error("Request that caused the error: ", error?.request);
             return { error: error?.response?.data, request: error?.request, status: error.response ? error.response.status : null };
-		}
-	}
+        }
+    }
 
     // ROLE: ADMIN, MANAGER, HUMAN_RESOURCE_MANAGER, AGENCY_MANAGER, AGENCY_HUMAN_RESOURCE_MANAGER
     async deleteTask(condition: DeletingDriverTaskCondition) {
         try {
-			const response: AxiosResponse = await axios.post(`${this.baseUrl}/delete`, condition, {
-				withCredentials: true,
-			});
+            const response: AxiosResponse = await axios.post(`${this.baseUrl}/delete`, condition, {
+                withCredentials: true,
+            });
 
-			const data = response.data;
-			return { error: data.error, message: data.message };
-		} catch (error: any) {
-			console.log("Error deleting task: ", error?.response?.data);
+            const data = response.data;
+            return { error: data.error, message: data.message };
+        } catch (error: any) {
+            console.log("Error deleting task: ", error?.response?.data);
             console.error("Request that caused the error: ", error?.request);
             return { error: error?.response?.data, request: error?.request, status: error.response ? error.response.status : null };
-		}
+        }
     }
 }

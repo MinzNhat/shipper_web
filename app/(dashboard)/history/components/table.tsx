@@ -105,7 +105,7 @@ const CheckTable = (props: Props) => {
             {openModal && (
                 <DetailOrder
                     onClose={handleClodeModal}
-                    dataInitial={dataRow.order}
+                    dataInitial={dataRow}
                 />
             )}
             {openError && <NotiPopup message={message} onClose={() => { setOpenError(false); reloadData(0) }} />}

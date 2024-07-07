@@ -176,6 +176,13 @@ const DetailOrder: React.FC<DetailPopupProps> = ({ onClose, dataInitial, reloadD
 
     useEffect(() => {
         handleFetchOrder()
+
+        function toUrl(images: Uint8Array[]): string[] {
+            return images.map(image => {
+                const blob = new Blob([image], { type: 'image/jpeg' }); // Adjust MIME type if necessary
+                return URL.createObjectURL(blob);
+            });
+        };
         const fetchImages = async () => {
             try {
                 const condition: UpdatingOrderImageParams = {
@@ -183,7 +190,8 @@ const DetailOrder: React.FC<DetailPopupProps> = ({ onClose, dataInitial, reloadD
                     taskId: dataInitial.id,
                     type: "send"
                 };
-                const urls = await ordersOperation.getImages(condition);
+                const images = await ordersOperation.getImages(condition);
+                const urls = toUrl(images.data || []);
                 setImageUrls(urls);
             } catch (error) {
                 console.error("Error fetching images:", error);
@@ -196,8 +204,9 @@ const DetailOrder: React.FC<DetailPopupProps> = ({ onClose, dataInitial, reloadD
                     taskId: dataInitial.id,
                     type: "receive"
                 };
-                const urls2 = await ordersOperation.getImages(condition);
-                setImageUrls2(urls2);
+                const images = await ordersOperation.getImages(condition);
+                const urls = toUrl(images.data || []);
+                setImageUrls2(urls);
             } catch (error) {
                 console.error("Error fetching images:", error);
             }
@@ -257,7 +266,7 @@ const DetailOrder: React.FC<DetailPopupProps> = ({ onClose, dataInitial, reloadD
             order_id: data.order_id,
         };
         setLoading(true)
-        const response = await ordersOperation.update(updatingOrderInfo, {orderId: updatingOrderCondition.order_id});
+        const response = await ordersOperation.update(updatingOrderInfo, { orderId: updatingOrderCondition.order_id });
         setOpenConfirm(false)
         if (response.error) {
             setMessage(response.message);

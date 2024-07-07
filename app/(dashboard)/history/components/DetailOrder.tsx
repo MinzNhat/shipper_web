@@ -22,7 +22,18 @@ const DetailOrder: React.FC<DetailOrderProps> = ({ onClose, dataInitial }) => {
     const ordersOperation = new OrdersOperation();
     const [option, setOption] = useState<null | number>(0);
     const intl = useIntl()
+
+    console.log("initial",dataInitial);
+    console.log("orderId",dataInitial.orderId);
+
     useEffect(() => {
+        console.log("useEffect")
+        function toUrl(images: Uint8Array[]): string[] {
+            return images.map(image => {
+                const blob = new Blob([image], { type: 'image/jpeg' }); // Adjust MIME type if necessary
+                return URL.createObjectURL(blob);
+            });
+        };
         const fetchData = async () => {
             try {
                 const sendSignatureCondition: GettingOrderImageParams = {
@@ -34,23 +45,32 @@ const DetailOrder: React.FC<DetailOrderProps> = ({ onClose, dataInitial }) => {
                     taskId: dataInitial.id,
                     type: "receive"
                 };
+        
+                // Fetch send and receive signature URLs
                 const sendSignatureUrl = await ordersOperation.getSignature(sendSignatureCondition);
                 const receiveSignatureUrl = await ordersOperation.getSignature(receiveSignatureCondition);
-
+        
+                // Fetch send images
                 const sendImagesCondition: UpdatingOrderImageParams = {
                     orderId: dataInitial.orderId,
                     taskId: dataInitial.id,
                     type: "send"
                 };
-                const sendImages = await ordersOperation.getImages(sendImagesCondition);
-                setImageUrls([...sendImages.map((image: any) => image), ...sendSignatureUrl.map((image: any) => image)]);
+                const images = await ordersOperation.getImages(sendImagesCondition);
+                const urls = toUrl(images.data || []);
+                setImageUrls(urls);
+        
+                // Fetch receive images
                 const receiveImagesCondition: UpdatingOrderImageParams = {
                     orderId: dataInitial.orderId,
                     taskId: dataInitial.id,
                     type: "receive"
                 };
-                const receiveImages = await ordersOperation.getImages(receiveImagesCondition);
-                setImageUrls2([...receiveImages.map((image: any) => image), ...receiveSignatureUrl.map((image: any) => image)]);
+                const images2 = await ordersOperation.getImages(receiveImagesCondition);
+                console.log("images2",images2);
+                const urls2 = toUrl(images2.data || []);
+                console.log("urls2",urls2);
+                setImageUrls2(urls2);
             } catch (error) {
                 console.error("Error fetching data:", error);
             }
@@ -58,6 +78,11 @@ const DetailOrder: React.FC<DetailOrderProps> = ({ onClose, dataInitial }) => {
 
         fetchData();
     }, []);
+
+    if (!dataInitial) {
+        return <div>Error: dataInitial is undefined or null.</div>;
+    }
+
     return (
         <DetailPopup children={
             <div className="flex flex-col md:flex-row">
@@ -136,28 +161,28 @@ const DetailOrder: React.FC<DetailOrderProps> = ({ onClose, dataInitial }) => {
                             {dataInitial.orderId || intl.formatMessage({ id: "Mission.Detail.Info17" })}
                         </p>
                         <p className="whitespace-nowrap flex flex-row gap-2">
-                            {dataInitial.name_sender || intl.formatMessage({ id: "Mission.Detail.Info17" })}
+                            {dataInitial.nameSender || intl.formatMessage({ id: "Mission.Detail.Info17" })}
                         </p>
                         <p className="whitespace-nowrap flex flex-row gap-2">
-                            {`${dataInitial.detail_source}, ${dataInitial.ward_source}, ${dataInitial.district_source}, ${dataInitial.province_source}`}
+                            {`${dataInitial.detailSource}, ${dataInitial.wardSource}, ${dataInitial.districtSource}, ${dataInitial.provinceSource}`}
                         </p>
                         <p className="whitespace-nowrap flex flex-row gap-2">
-                            {dataInitial.phone_number_sender || intl.formatMessage({ id: "Mission.Detail.Info17" })}
+                            {dataInitial.phoneNumberSender || intl.formatMessage({ id: "Mission.Detail.Info17" })}
                         </p>
                         <p className="whitespace-nowrap flex flex-row gap-2">
-                            {dataInitial.name_receiver || intl.formatMessage({ id: "Mission.Detail.Info17" })}
+                            {dataInitial.nameReceiver || intl.formatMessage({ id: "Mission.Detail.Info17" })}
                         </p>
                         <p className="whitespace-nowrap flex flex-row gap-2">
-                            {`${dataInitial.detail_dest}, ${dataInitial.ward_dest}, ${dataInitial.district_dest}, ${dataInitial.province_dest}`}
+                            {`${dataInitial.detailDest}, ${dataInitial.wardDest}, ${dataInitial.districtDest}, ${dataInitial.provinceDest}`}
                         </p>
                         <p className="whitespace-nowrap flex flex-row gap-2">
-                            {dataInitial.phone_number_receiver || intl.formatMessage({ id: "Mission.Detail.Info17" })}
+                            {dataInitial.phoneNumberReceiver || intl.formatMessage({ id: "Mission.Detail.Info17" })}
                         </p>
                         <p className="whitespace-nowrap flex flex-row gap-2">
                             {parseFloat(dataInitial.fee).toLocaleString('vi-VN', { style: 'currency', currency: 'VND' }) || intl.formatMessage({ id: "Mission.Detail.Info17" })}
                         </p>
                         <p className="whitespace-nowrap flex flex-row gap-2">
-                            {parseFloat(dataInitial.COD).toLocaleString('vi-VN', { style: 'currency', currency: 'VND' }) || intl.formatMessage({ id: "Mission.Detail.Info17" })}
+                            {parseFloat(dataInitial.cod).toLocaleString('vi-VN', { style: 'currency', currency: 'VND' }) || intl.formatMessage({ id: "Mission.Detail.Info17" })}
                         </p>
                         <p className="whitespace-nowrap flex flex-row gap-2">
                             {dataInitial.mass || intl.formatMessage({ id: "Mission.Detail.Info17" })}

@@ -1,26 +1,23 @@
 export const columnsData = [
-  // {
-  //   Header: "Checkbox",
-  // },
   {
     Header: "order.orderId",
-    accessor: "order.orderId",
+    accessor: "orderId",
   },
   {
     Header: "order.nameSender",
-    accessor: "order.nameSender",
+    accessor: "nameSender",
   },
   {
     Header: "order.nameReceiver",
-    accessor: "order.nameReceiver",
+    accessor: "nameReceiver",
   },
   {
     Header: "order.fee",
-    accessor: "order.fee",
+    accessor: "fee",
   },
   {
     Header: "order.COD",
-    accessor: "order.COD",
+    accessor: "cod",
   },
   {
     Header: "order.detail",

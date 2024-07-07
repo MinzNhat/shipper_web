@@ -85,7 +85,9 @@ const AddPanel = () => {
         if (passData?.role == "PARTNER_DRIVER") {
             response = await drivertasks.getTask({ option: option });
         } else {
-            response = await tasks.getTask({ option: option });
+            // response = await tasks.getTask({ option: option });
+            response = await tasks.getHistory({ option: option });
+            console.log(response);
             for (var i = 0; i < response.data.length; i++) {
                 var data = await ordersOperation.get({ orderId: (response.data[i].orderId) });
                 console.log(data);
@@ -93,6 +95,7 @@ const AddPanel = () => {
             }
             console.log("ok");
         }
+        console.log("ok");
 
         if (!!response.error || !!response.error.error) {
             setMessage(response.message);

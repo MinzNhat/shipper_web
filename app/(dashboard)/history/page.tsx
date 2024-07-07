@@ -25,8 +25,6 @@ const ShipperHistory = () => {
         }
 
         data2.data = datas;
-        console.log("data2.data");
-        console.log(data2.data);
         if (!data2.error) setData(data2.data)
     }
 
